@@ -1385,6 +1385,45 @@ main,.view{scroll-padding-bottom:110px}
     }
     return out;
   }
+  /* Fallback for exports with no workouts (iPhone-only walking): rebuild walks from walking distance records.
+     Records closer than 5 min apart form one session. Kept if 0.5 km+, 5 min+ of active time and 2 to 8 km/h (so runs and rides are left out). */
+  async function hkScanDist(stream,total,job){
+    var r=stream.getReader(),dec=new TextDecoder(),buf='',recs={},read=0,last=-1,M='<Record type="HKQuantityTypeIdentifierDistanceWalkingRunning"';
+    for(;;){
+      var x=await r.read();if(x.done)break;
+      if(job.cancel){try{r.cancel()}catch(_){}throw new Error('cancel')}
+      read+=x.value.length;buf+=dec.decode(x.value,{stream:true});
+      for(;;){
+        var i=buf.indexOf(M);
+        if(i<0){buf=buf.slice(-M.length);break}
+        var gt=buf.indexOf('>',i);if(gt<0){buf=buf.slice(i);break}
+        var a=hkAttrs(buf.slice(i,gt+1)),s=hkDate(a.startDate),e=hkDate(a.endDate),km=hkKm(a.value,a.unit||'km');
+        buf=buf.slice(gt+1);
+        if(km>0&&e>=s){var k=a.sourceName||'?';(recs[k]=recs[k]||[]).push([s,e,km])}
+      }
+      var pc=total?Math.min(99,Math.floor(read/total*100)):0;
+      if(pc!==last){last=pc;hkShow('No workouts found. Looking for walks in your distance records… '+pc+'%',pc/100)}
+    }
+    return hkSessions(recs);
+  }
+  function hkSessions(recs){
+    var out=[];
+    Object.keys(recs).forEach(function(k){
+      var cur=null;
+      function flush(){
+        if(!cur)return;
+        var sp=cur.km/(cur.act/3600);
+        if(cur.km>=.5&&cur.act>=300&&sp>=2&&sp<=8)out.push({st:cur.s,fin:cur.e,km:cur.km,secs:Math.round(cur.act),route:null});
+        cur=null}
+      recs[k].sort(function(p,q){return p[0]-q[0]}).forEach(function(q){
+        if(cur&&q[0]-cur.e<=3e5){cur.km+=q[2];cur.e=Math.max(cur.e,q[1]);cur.act+=(q[1]-q[0])/1000}
+        else{flush();cur={s:q[0],e:q[1],km:q[2],act:(q[1]-q[0])/1000}}});
+      flush()});
+    out.sort(function(p,q){return p.st-q.st});
+    var keep=[];   /* the same walk seen by two devices: keep the longer one */
+    out.forEach(function(w){var l=keep[keep.length-1];
+      if(l&&w.st<l.fin){if(w.km>l.km)keep[keep.length-1]=w}else keep.push(w)});
+    return keep}
   function hkShow(msg,frac){
     if(!$('#hk').classList.contains('on')){rememberFocus();trapEl=$('#hk .panel')}
     $('#hkMsg').textContent=msg;$('#hkOpt').hidden=true;$('#hkGo').hidden=true;
@@ -1402,21 +1441,22 @@ main,.view{scroll-padding-bottom:110px}
     var job=hkJob={cancel:false,file:f,list:[],other:{},zip:null,fresh:false};
     hkShow('Reading your export…',0);
     try{
-      var stream,total=f.size;
+      var open,total=f.size;
       if(/\.zip$/i.test(f.name)||f.type==='application/zip'||f.type==='application/x-zip-compressed'){
         job.zip=await zipEntries(f);
         var ex=job.zip.filter(function(z){return /(^|\/)export\.xml$/i.test(z.name)})[0];
         if(!ex){hkFail('No export.xml in that zip. Use the export.zip from Health, Export All Health Data.');return}
-        stream=await zipStream(f,ex);total=ex.usz||f.size;
-      }else stream=f.stream();
-      job.list=await hkScan(stream,total,job);
+        open=function(){return zipStream(f,ex)};total=ex.usz||f.size;
+      }else open=function(){return Promise.resolve(f.stream())};
+      job.list=await hkScan(await open(),total,job);
+      if(!job.list.length&&!job.cancel){job.list=await hkScanDist(await open(),total,job);job.derived=true}
     }catch(x){
       if(job.cancel)return;
       hkFail(x&&x.message==='method'?'This browser can’t unzip that file. Unzip it first and pick export.xml.':'Couldn’t read that file. Pick the export.zip or export.xml from Apple Health.');return}
     if(job.cancel)return;
     if(!job.list.length){
       var ot=Object.keys(job.other).sort(function(x,y){return job.other[y]-job.other[x]}),no=ot.reduce(function(n,k){return n+job.other[k]},0);
-      hkFail('No walking or hiking workouts found in that export. '+(no?'It has '+no+' other workout'+(no===1?'':'s')+' ('+ot.slice(0,4).map(function(k){return k.replace(/([a-z])([A-Z])/g,'$1 $2').toLowerCase()+' '+job.other[k]}).join(', ')+'). ':'It has no workouts at all. ')+'Health only saves a walk as a workout when it was started on Apple Watch or in the Fitness app. Walking tracked just by the iPhone is stored as steps and distance, which this import does not read.');return}
+      hkFail('No walks found in that export. It has no walking workouts'+(no?' (only '+no+' other workout'+(no===1?'':'s')+': '+ot.slice(0,4).map(function(k){return k.replace(/([a-z])([A-Z])/g,'$1 $2').toLowerCase()+' '+job.other[k]}).join(', ')+')':'')+' and no walking distance records that look like a walk.');return}
     var now=Date.now(),R=[[30,'Last 30 days'],[90,'Last 3 months'],[365,'Last 12 months'],[0,'Everything']],sel=$('#hkRange'),prev=-1,def=null,opts=[];
     R.forEach(function(r){var n=job.list.filter(function(w){return !r[0]||w.fin>=now-r[0]*864e5}).length;
       if(n&&n!==prev||(!r[0]&&!opts.some(function(o){return !o[0]}))){opts.push([r[0],r[1],n]);prev=n}});
@@ -1426,7 +1466,7 @@ main,.view{scroll-padding-bottom:110px}
     var withRoute=job.zip?job.list.filter(function(w){return w.route}).length:0,
         first=Math.min.apply(null,job.list.map(function(w){return w.fin})),
         d=function(t){return new Date(t).toLocaleDateString([],{month:'short',year:'numeric'})};
-    hkShow('Found '+job.list.length+(job.list.length===1?' walk':' walks')+', '+d(first)+' to '+d(Math.max.apply(null,job.list.map(function(w){return w.fin})))+'.'+(job.zip?' '+withRoute+' with routes. Routes use more storage.':' Routes need the full export.zip.'),null);
+    hkShow('Found '+job.list.length+(job.list.length===1?' walk':' walks')+', '+d(first)+' to '+d(Math.max.apply(null,job.list.map(function(w){return w.fin})))+'.'+(job.derived?' Built from your distance records, so there are no routes and times are approximate.':job.zip?' '+withRoute+' with routes. Routes use more storage.':' Routes need the full export.zip.'),null);
     $('#hkOpt').hidden=false;$('#hkGo').hidden=false;
   });
   $('#hkGo').onclick=async function(){
