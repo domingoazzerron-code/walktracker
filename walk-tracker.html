@@ -1378,7 +1378,7 @@ main,.view{scroll-padding-bottom:110px}
         else{var ce=buf.indexOf('</Workout>',gt);
           if(ce<0){buf=(buf.length-i>400000)?buf.slice(gt+1):buf.slice(i);break}
           el=buf.slice(i,ce+10);buf=buf.slice(ce+10)}
-        var w=hkWorkout(el);if(w)out.push(w);
+        var w=hkWorkout(el);if(w)out.push(w);else{var ty=/workoutActivityType="HKWorkoutActivityType(\w+)"/.exec(el);if(ty)job.other[ty[1]]=(job.other[ty[1]]||0)+1}
       }
       var pc=total?Math.min(99,Math.floor(read/total*100)):0;
       if(pc!==last){last=pc;hkShow('Reading your export… '+pc+'%',pc/100)}
@@ -1399,7 +1399,7 @@ main,.view{scroll-padding-bottom:110px}
   $('#hkFile').addEventListener('change',async function(e){
     var f=e.target.files[0];e.target.value='';if(!f)return;
     if(hkJob)hkJob.cancel=true;
-    var job=hkJob={cancel:false,file:f,list:[],zip:null,fresh:false};
+    var job=hkJob={cancel:false,file:f,list:[],other:{},zip:null,fresh:false};
     hkShow('Reading your export…',0);
     try{
       var stream,total=f.size;
@@ -1414,7 +1414,9 @@ main,.view{scroll-padding-bottom:110px}
       if(job.cancel)return;
       hkFail(x&&x.message==='method'?'This browser can’t unzip that file. Unzip it first and pick export.xml.':'Couldn’t read that file. Pick the export.zip or export.xml from Apple Health.');return}
     if(job.cancel)return;
-    if(!job.list.length){hkFail('No walking or hiking workouts found in that export.');return}
+    if(!job.list.length){
+      var ot=Object.keys(job.other).sort(function(x,y){return job.other[y]-job.other[x]}),no=ot.reduce(function(n,k){return n+job.other[k]},0);
+      hkFail('No walking or hiking workouts found in that export. '+(no?'It has '+no+' other workout'+(no===1?'':'s')+' ('+ot.slice(0,4).map(function(k){return k.replace(/([a-z])([A-Z])/g,'$1 $2').toLowerCase()+' '+job.other[k]}).join(', ')+'). ':'It has no workouts at all. ')+'Health only saves a walk as a workout when it was started on Apple Watch or in the Fitness app. Walking tracked just by the iPhone is stored as steps and distance, which this import does not read.');return}
     var now=Date.now(),R=[[30,'Last 30 days'],[90,'Last 3 months'],[365,'Last 12 months'],[0,'Everything']],sel=$('#hkRange'),prev=-1,def=null,opts=[];
     R.forEach(function(r){var n=job.list.filter(function(w){return !r[0]||w.fin>=now-r[0]*864e5}).length;
       if(n&&n!==prev||(!r[0]&&!opts.some(function(o){return !o[0]}))){opts.push([r[0],r[1],n]);prev=n}});
