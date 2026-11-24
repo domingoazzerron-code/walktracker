@@ -1,5 +1,5 @@
 /* Constellation Walks: offline support. Keep this file next to walk-tracker.html. */
-var CACHE='cw-v4';
+var CACHE='cw-v5';
 var FILES=['./','./walk-tracker.html','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){
@@ -15,7 +15,7 @@ self.addEventListener('fetch',function(e){
   if(u.origin!==location.origin&&!fonts)return;
   if(r.mode==='navigate'){
     /* pages: network first so updates arrive, cached copy when offline */
-    e.respondWith(fetch(r).then(function(res){var cp=res.clone();caches.open(CACHE).then(function(c){c.put(r,cp)});return res}).catch(function(){
+    e.respondWith(fetch(r).then(function(res){if(res&&res.ok){var cp=res.clone();caches.open(CACHE).then(function(c){c.put(r,cp)})}return res}).catch(function(){
       return caches.match(r).then(function(m){return m||caches.match('./walk-tracker.html')||caches.match('./index.html')||caches.match('./')})}));
     return;
   }

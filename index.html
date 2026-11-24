@@ -364,6 +364,88 @@ textarea:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(255,25
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.wc .tags{justify-content:center}
 .tg{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--field);color:var(--mute)}
 button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
+/* ---- settings polish ---- */
+#v3 .card p{font-size:13px;line-height:1.45;color:var(--mute);margin:6px 0 0}
+#v3 .card p.hint{margin-top:8px}
+#v3 .card label{display:block;margin:0 0 6px;font-size:14px;font-weight:500}
+#v3 .sub label{margin-top:0}
+#v3 .sub>.row,#v3 .card>.row{margin-top:12px}
+#v3 .seg .btn{flex:1}
+#v3 .sub:first-child{margin-top:0;padding-top:0;border-top:0}
+.sfoot{margin:26px 0 8px;text-align:center;font-size:12px;color:var(--mute)}
+.pnote{margin:6px 0 0;padding-right:48px;font-size:13px;line-height:1.35;color:#ffe3a6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.ptags{display:block;margin-top:4px;font-size:12px;color:#d8d8dc}
+/* ---- navbar: round button left, pill right, side by side with no overlap ---- */
+.dock{width:min(440px,calc(100% - 24px));gap:12px;padding:0;isolation:isolate}
+.dock::before{content:"";position:absolute;left:-16px;right:-16px;top:-34px;bottom:calc(-16px - env(safe-area-inset-bottom,0px));z-index:-1;pointer-events:none;
+  background:linear-gradient(to bottom,transparent,var(--bg0) 48%);opacity:1}
+.sbtn{width:61px;height:61px;margin:0}
+.dock nav{flex:1;min-width:0}
+.pill{height:61px;align-items:center;padding:5px}
+.tab{height:49px}
+.tab .lb{display:none}
+.tab svg{transition:transform .35s cubic-bezier(.32,.72,0,1),stroke-width .2s}
+.tab.on svg{transform:scale(1.08);stroke-width:2}
+.ind{transition:transform .45s cubic-bezier(.32,.72,0,1)}
+main,.view{scroll-padding-bottom:110px}
+.view>*:last-child{margin-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+.sbtn{background:var(--ink);background-image:none;color:var(--bg0);border-color:transparent}
+.sbtn:hover,.sbtn.on{color:var(--bg0);background-image:none;opacity:.86}
+.sbtn svg{stroke-width:2}
+/* ---- navbar v3: one floating pill, raised round button sitting in a curved cradle ---- */
+:root{--dockbg:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--dockbg:#1c1c1e}}
+:root[data-theme="dark"]{--dockbg:#1c1c1e}
+.dock{display:block;position:fixed;height:60px;width:min(440px,calc(100% - 32px));gap:0}
+.dbg{position:absolute;left:-10px;right:-10px;top:-50px;bottom:-10px;pointer-events:none;filter:url(#goo) drop-shadow(0 12px 22px rgba(0,0,0,.2)) drop-shadow(0 1px 1px rgba(0,0,0,.08))}
+.dbar{position:absolute;left:10px;right:10px;top:50px;height:60px;border-radius:30px;background:var(--dockbg)}
+.dbump{position:absolute;left:12px;top:20px;width:68px;height:68px;border-radius:50%;background:var(--dockbg)}
+.sbtn{position:absolute;left:10px;top:-22px;width:52px;height:52px;margin:0;z-index:2;color:var(--bg0);background:radial-gradient(circle at 35% 28%,color-mix(in srgb,var(--ink) 82%,#fff),var(--ink) 70%);border:0;box-shadow:0 8px 16px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.25);backdrop-filter:none;-webkit-backdrop-filter:none}
+.sbtn:hover,.sbtn.on{opacity:1;color:var(--bg0)}
+.sbtn:active{transform:scale(.94)}
+.dock nav{position:absolute;inset:0;z-index:1}
+.pill{height:60px;padding:0 10px 0 82px;background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;align-items:center}
+.ind{display:none}
+.tab{height:60px;color:var(--mute)}
+.tab svg{transition:transform .35s cubic-bezier(.32,.72,0,1)}
+.tab.on{color:var(--ink)}
+.tab.on svg{transform:translateY(-2px) scale(1.1);stroke-width:2}
+.tab::after{content:"";position:absolute;bottom:6px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--ink);opacity:0;transform:scale(.3);transition:opacity .3s,transform .35s cubic-bezier(.32,.72,0,1)}
+.tab.on::after{opacity:1;transform:none}
+.dock::before{left:-16px;right:-16px;top:-40px}
+/* ---- navbar v4: the selected tab is the raised, floating circle and slides along the pill ---- */
+:root{--onacc:#17171c;--dockbg:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--onacc:#0a0a0a;--dockbg:#1b1b1d}}
+:root[data-theme="dark"]{--onacc:#0a0a0a;--dockbg:#1b1b1d}
+:root[data-theme="light"]{--onacc:#17171c;--dockbg:#ffffff}
+.dock{display:flex;align-items:flex-end;gap:12px;height:60px;width:min(440px,calc(100% - 32px))}
+.dpill{position:relative;flex:1;min-width:0;height:60px}
+.dbg{position:absolute;left:-10px;right:-10px;top:-50px;bottom:-10px;pointer-events:none;filter:url(#goo) drop-shadow(0 12px 22px rgba(0,0,0,.2)) drop-shadow(0 1px 1px rgba(0,0,0,.08))}
+.dbar{position:absolute;left:10px;right:10px;top:50px;height:60px;border-radius:30px;background:var(--dockbg)}
+.btrack,.ftrack{position:absolute;transition:transform .5s cubic-bezier(.32,.72,0,1);transform:translateX(calc(var(--i,0)*100%))}
+.btrack{left:18px;top:20px;width:calc((100% - 36px)/4);height:68px}
+.dbump{position:static;width:68px;height:68px;margin:0 auto;border-radius:50%;background:var(--dockbg)}
+.ftrack{left:8px;top:-22px;width:calc((100% - 16px)/4);height:52px}
+.fl{width:52px;height:52px;margin:0 auto;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--g3));box-shadow:0 8px 16px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.45)}
+.dpill nav{position:absolute;inset:0;z-index:2;flex:none}
+.pill{height:60px;padding:0 8px;grid-template-columns:repeat(4,1fr);background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.tab{height:60px;color:var(--mute)}
+.tab::after{display:none}
+.tab svg{transition:transform .5s cubic-bezier(.32,.72,0,1),color .3s}
+.tab.on{color:var(--onacc)}
+.tab.on svg{transform:translateY(-26px);stroke-width:2}
+.sbtn{position:static;flex:none;width:60px;height:60px;color:var(--ink);background:var(--dockbg);border:0;box-shadow:0 12px 22px rgba(0,0,0,.2),0 1px 1px rgba(0,0,0,.08)}
+.sbtn:hover,.sbtn.on{color:var(--ink);opacity:1}
+.sbtn svg{stroke-width:1.9}
+/* ---- tab switching: slide with the direction of travel, quick fade-out, soft fade-in ---- */
+.view{transform:translateX(28px);transition:opacity .22s ease,transform .5s cubic-bezier(.32,.72,0,1),visibility 0s .5s}
+.view.before{transform:translateX(-28px)}
+.view.on{opacity:1;transform:none;transition:opacity .4s ease .08s,transform .55s cubic-bezier(.32,.72,0,1),visibility 0s}
+.tab:active svg{transform:scale(.88)}
+.tab.on:active svg{transform:translateY(-26px) scale(.9)}
+.how{margin:8px 0 4px;padding-left:20px;text-align:left;font-size:13.5px;line-height:1.5;color:var(--mute)}
+.how b{color:var(--ink);font-weight:500}
+.pcard .btn.arm{background:var(--ink);color:var(--bg0);border-color:transparent}
 </style>
 </head>
 <body>
@@ -379,7 +461,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
       <div class="card empty">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.6 6.4L21 9.3l-5 4.4 1.5 6.6L12 17l-5.5 3.3L8 13.7 3 9.3l6.4-.9z" fill="#ffd98a"/></svg>
         <h2>Your sky is empty</h2>
-        <p>Import your first walk and it becomes your first star.</p><button class="btn" id="impEmpty">Import walk</button><button class="btn" id="manEmpty">Add by hand</button>
+        <p>Import your first walk and it becomes your first star.</p><ol class="how"><li>Track a walk in Strava, AllTrails or on an Apple Watch.</li><li>Export it as a <b>.gpx</b> file.</li><li>Tap <b>Import walk</b> and pick the file.</li></ol><p class="hint">No file yet? Add a walk by hand, or bring everything in from Apple Health in Settings.</p><button class="btn" id="impEmpty">Import walk</button><button class="btn" id="manEmpty">Add by hand</button>
       </div>
     </section>
     <section class="view" id="v1" role="tabpanel" aria-labelledby="tab1" aria-hidden="true"><input type="file" id="pimg" accept="image/*" multiple hidden><div id="deckArea"></div>
@@ -397,24 +479,24 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
         <input type="text" id="nameIn" maxlength="24" placeholder="What should I call you?" autocomplete="off">
         <div class="sub"><h3>Avatar</h3>
           <div class="emojis" id="emojis"></div>
-          <div class="row nw"><button class="btn" id="upBtn">Upload photo</button><button class="btn" id="rmBtn">Remove photo</button><input type="file" id="file" accept="image/*" hidden></div></div>
+          <div class="row nw"><button class="btn" id="upBtn">Upload photo</button><button class="btn" id="rmBtn">Use default</button><input type="file" id="file" accept="image/*" hidden></div></div>
         <div class="sub"><h3 id="themeLbl">Appearance</h3><div class="row seg nw" id="themeSeg" role="group" aria-labelledby="themeLbl" style="margin-top:8px"><button class="btn" data-th="auto" aria-pressed="false">Auto</button><button class="btn" data-th="light" aria-pressed="false">Light</button><button class="btn" data-th="dark" aria-pressed="false">Dark</button></div></div>
       </div>
       <h3 class="sh">Walking</h3>
       <div class="card">
         <label for="strideIn">Stride length (cm)</label><input type="number" id="strideIn" min="30" max="150" inputmode="numeric">
-        <p class="hint">Steps are estimated from distance and this length.</p>
+        <p class="hint" id="strideHint"></p>
         <div class="sub"><h3 id="unitLbl">Distance unit</h3><div class="row seg nw" id="unitSeg" role="group" aria-labelledby="unitLbl" style="margin-top:8px"><button class="btn" data-u="km" aria-pressed="false">Kilometres</button><button class="btn" data-u="mi" aria-pressed="false">Miles</button></div></div>
         <div class="sub"><label for="goalIn" id="goalLbl">Monthly goal (km, 0 for none)</label><input type="number" id="goalIn" min="0" max="2000" step="any" inputmode="decimal" placeholder="e.g. 60"></div>
       </div>
       <h3 class="sh">Data</h3>
       <div class="card">
-        <h2>Apple Health</h2>
+        <h3>Apple Health</h3>
         <p>Health, tap your picture, Export All Health Data, then pick the export.zip here. Time is Apple’s active time, so pauses are not counted.</p>
         <div class="row"><button class="btn" id="hkBtn">Import Apple Health export</button><input type="file" id="hkFile" accept=".zip,.xml,application/zip,text/xml" hidden></div>
-        <div class="sub"><h2>Backup</h2><p>Your walks live only in this browser. Save a copy to keep them safe or move them to another device.</p><div class="row nw"><button class="btn" id="bkExp">Export backup</button><button class="btn" id="bkImp">Restore backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div><p id="bkInfo" class="hint"></p></div><div class="sub"><h2>Offline and install</h2><p id="pwaInfo">Checking…</p></div>
+        <div class="sub"><h3>Backup</h3><p>Your walks live only in this browser. Save a copy to keep them safe or move them to another device.</p><div class="row nw"><button class="btn" id="bkExp">Export backup</button><button class="btn" id="bkImp">Restore backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div><p id="bkInfo" class="hint"></p><p id="pStore" class="hint"></p></div><div class="sub"><h3>Offline and install</h3><p id="pwaInfo">Checking…</p></div>
       </div>
-      <details class="card more"><summary>Test walks</summary><p>Add a made-up walk to try the constellation and photocards without leaving the house.</p><div class="row nw"><button class="btn" id="tAdd">Add test walk</button><button class="btn" id="tRm">Remove test walks</button></div></details>
+      <p class="sfoot">Constellation Walks · everything stays on this device</p>
     </section>
   </main>
 
@@ -423,15 +505,20 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
   <div class="pop" id="pop"><div class="pscrim"></div><div class="card pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Walk details" aria-labelledby="pTitle"></div></div>
   <div class="toast" id="toast" role="status"></div>
   <div class="dock">
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><filter id="goo" x="-10%" y="-60%" width="120%" height="220%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/><feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/></filter></defs></svg>
+  <div class="dpill">
+  <div class="dbg" aria-hidden="true"><div class="dbar"></div><div class="btrack"><div class="dbump"></div></div></div>
+  <div class="ftrack" aria-hidden="true"><div class="fl"></div></div>
   <nav aria-label="Main">
     <div class="pill" role="tablist" aria-label="App sections">
       <div class="ind" id="ind" aria-hidden="true"></div>
-      <button class="tab on" id="tab0" role="tab" data-i="0" aria-selected="true" aria-controls="v0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="lb">Home</span></button>
-      <button class="tab" id="tab1" role="tab" data-i="1" aria-selected="false" aria-controls="v1"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg><span class="lb">Photocards</span></button>
-      <button class="tab" id="tab2" role="tab" data-i="2" aria-selected="false" aria-controls="v2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg><span class="lb">Progress</span></button>
-      <button class="tab" id="tab3" role="tab" data-i="3" aria-selected="false" aria-controls="v3"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lb">Settings</span></button>
+      <button class="tab on" id="tab0" role="tab" aria-label="Home" title="Home" data-i="0" aria-selected="true" aria-controls="v0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="lb">Home</span></button>
+      <button class="tab" id="tab1" role="tab" aria-label="Photocards" title="Photocards" data-i="1" aria-selected="false" aria-controls="v1"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg><span class="lb">Photocards</span></button>
+      <button class="tab" id="tab2" role="tab" aria-label="Progress" title="Progress" data-i="2" aria-selected="false" aria-controls="v2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg><span class="lb">Progress</span></button>
+      <button class="tab" id="tab3" role="tab" aria-label="Settings" title="Settings" data-i="3" aria-selected="false" aria-controls="v3"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lb">Settings</span></button>
     </div>
   </nav>
+  </div>
   <button class="sbtn" id="sbtn" type="button" aria-label="Search walks" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
   </div>
   <div class="sq" id="sq"><div class="sqscrim"></div><div class="sqpanel" role="dialog" aria-modal="true" aria-label="Search walks">
@@ -516,8 +603,9 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
            photos:Array.isArray(x.photos)?x.photos.filter(function(p){return typeof p==='string'&&p.indexOf('data:image/')===0}).slice(0,6):[]};
     if(typeof x.note==='string'&&x.note.trim())w.note=x.note.trim().slice(0,280);
     var tg=tagList(x.tags);if(tg.length)w.tags=tg;
-    if(x.manual)w.manual=true;if(x.sketch)w.sketch=true;if(x.test)w.test=true;if(x.hk)w.hk=true;return w}
-  try{var wr=localStorage.getItem(WK);if(wr){var wa=JSON.parse(wr),seen={};if(Array.isArray(wa))wa.forEach(function(x){var w=clean(x);if(w&&!seen[w.id]){seen[w.id]=1;walks.push(w)}})}}catch(e){}
+    if(x.manual)w.manual=true;if(x.sketch)w.sketch=true;if(x.hk)w.hk=true;return w}
+  var oldTest=[];
+  try{var wr=localStorage.getItem(WK);if(wr){var wa=JSON.parse(wr),seen={};if(Array.isArray(wa))wa.forEach(function(x){var w=clean(x);if(x&&x.test){oldTest.push(String(x.id))}else if(w&&!seen[w.id]){seen[w.id]=1;walks.push(w)}})}}catch(e){}
   /* photos live in IndexedDB (no 5 MB cap). The walk list in localStorage keeps only the small stuff.
      If IndexedDB is unavailable, photos stay inside the walk list as before. */
   var db=null,idbOK=false,photosReady=!window.indexedDB;
@@ -526,7 +614,15 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     t.oncomplete=function(){res(q&&q.result)};t.onerror=t.onabort=function(){rej(t.error||new Error('idb'))}})}
   function putPhotos(w){return idbOK?idbTx('readwrite',function(s){return (w.photos&&w.photos.length)?s.put(w.photos,w.id):s.delete(w.id)}):Promise.resolve()}
   function delPhotos(id){if(idbOK)idbTx('readwrite',function(s){return s.delete(id)}).catch(function(){})}
-  function touch(){st.chg=Date.now();save()}
+  /* storage protection: ask the browser not to clear walks and photos when space runs low */
+  var pState='unknown',pAsked=false;
+  function showPersist(){var el=$('#pStore');if(!el)return;
+    el.textContent=pState==='yes'?'Storage is protected: the browser will not clear your walks to free space.':pState==='no'?'Storage is not protected yet, so the browser could clear it if the device runs low on space. Keep a backup. Adding the app to your Home Screen usually helps.':pState==='na'?'This browser can’t protect storage, so keep a backup.':''}
+  async function askPersist(){
+    if(!(navigator.storage&&navigator.storage.persist)){pState='na';showPersist();return}
+    try{var ok=await navigator.storage.persisted();if(!ok&&!pAsked){pAsked=true;ok=await navigator.storage.persist()}pState=ok?'yes':'no'}catch(e){pState='na'}
+    showPersist()}
+  function touch(){st.chg=Date.now();save();if(!pAsked&&pState!=='yes')askPersist()}
   function saveW(){touch();try{localStorage.setItem(WK,JSON.stringify(walks,function(k,v){return k==='photos'&&idbOK&&Array.isArray(v)?undefined:v}));return true}catch(e){return false}}
   function openPhotoDB(){
     if(!window.indexedDB)return;
@@ -543,6 +639,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
           var v=await idbTx('readonly',function(s){return s.get(w.id)});
           if(Array.isArray(v))w.photos=v.filter(function(p){return typeof p==='string'&&p.indexOf('data:image/')===0}).slice(0,6)}
       }catch(e){if(!idbOK)toast('Photos will be kept in the old storage on this device')}
+      oldTest.forEach(delPhotos);if(oldTest.length){oldTest=[];saveW()}
       photosReady=true;renderWalks();bkInfo();
     };
   }
@@ -607,14 +704,14 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     var C=cleanPts(P),km=0;for(i=1;i<C.length;i++)km+=hav(C[i-1],C[i]);
     var ts=P.map(function(p){return p.t}).filter(function(t){return !isNaN(t)});
     var tmax=ts.reduce(function(a,b){return Math.max(a,b)},-Infinity),tmin=ts.reduce(function(a,b){return Math.min(a,b)},Infinity);
-    var fin=ts.length?tmax:fb,secs=ts.length>1?movingSecs(C,Math.round((tmax-tmin)/1000)):0;
+    var nots=!ts.length,fin=ts.length?tmax:fb,secs=ts.length>1?movingSecs(C,Math.round((tmax-tmin)/1000)):0;
     var k=Math.cos(rad(C[0].la)),xs=C.map(function(p){return p.lo*k}),ys=C.map(function(p){return -p.la});
     var x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);
     var w=(x1-x0)||1e-9,h=(y1-y0)||1e-9,s=Math.max(w,h),eps=s*0.003,idx=simplifyIdx(xs,ys,eps),pts=[];
     while(idx.length>160){eps*=1.5;idx=simplifyIdx(xs,ys,eps)}
     function pt(j){return [+((xs[j]-x0)/s).toFixed(4),+((ys[j]-y0)/s).toFixed(4)]}
     idx.forEach(function(j){pts.push(pt(j))});
-    return {id:fin+'-'+Math.round(raw*1000),fin:fin,km:+km.toFixed(3),secs:secs,pts:pts,w:w/s,h:h/s};
+    return {id:fin+'-'+Math.round(raw*1000),fin:fin,km:+km.toFixed(3),secs:secs,pts:pts,w:w/s,h:h/s,nots:nots};
   }
   function routeSVG(wk){if(!wk.pts)return '<p class="noroute">'+(wk.manual?'Added by hand, so there’s no route to draw.':'No route was recorded for this walk.')+'</p>';
     var W=300,H=200,pad=26,s=Math.min((W-2*pad)/wk.w,(H-2*pad)/wk.h),ox=(W-wk.w*s)/2,oy=(H-wk.h*s)/2;
@@ -648,7 +745,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     var s='<svg class="cs'+(anim?' anim':'')+'" viewBox="0 0 320 220" role="img" aria-label="Your constellation for this month"><defs><radialGradient id="sg"><stop offset="0" style="stop-color:var(--g3)" stop-opacity=".85"/><stop offset="1" style="stop-color:var(--g3)" stop-opacity="0"/></radialGradient></defs>';
     for(var i=1;i<n;i++)s+='<path class="ln" pathLength="1" style="--d:'+((i-1)*.6+.3).toFixed(2)+'s" d="M'+P[i-1].x.toFixed(1)+' '+P[i-1].y.toFixed(1)+' L'+P[i].x.toFixed(1)+' '+P[i].y.toFixed(1)+'"/>';
     P.forEach(function(p,i){tot+=p.w.km;var x=p.x.toFixed(1),y=p.y.toFixed(1);
-      s+='<g class="star st" data-id="'+p.w.id+'" tabindex="0" role="button" aria-label="'+new Date(p.w.fin).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+', '+fdu(p.w.km,1)+' '+uN()+'" style="--d:'+(i*.6+.25).toFixed(2)+'s"><circle cx="'+x+'" cy="'+y+'" r="20" fill="transparent"/><circle class="halo" style="animation-delay:'+(i*.7).toFixed(1)+'s" cx="'+x+'" cy="'+y+'" r="'+(p.r*3.2).toFixed(1)+'" fill="url(#sg)"/><circle cx="'+x+'" cy="'+y+'" r="'+p.r.toFixed(1)+'" fill="#fff3d6" class="core"/>'
+      s+='<g class="star st" data-id="'+p.w.id+'" tabindex="0" role="button" aria-label="'+new Date(p.w.fin).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+', '+fdu(p.w.km,1)+'" style="--d:'+(i*.6+.25).toFixed(2)+'s"><circle cx="'+x+'" cy="'+y+'" r="20" fill="transparent"/><circle class="halo" style="animation-delay:'+(i*.7).toFixed(1)+'s" cx="'+x+'" cy="'+y+'" r="'+(p.r*3.2).toFixed(1)+'" fill="url(#sg)"/><circle cx="'+x+'" cy="'+y+'" r="'+p.r.toFixed(1)+'" fill="#fff3d6" class="core"/>'
         +(n<=8?'<text x="'+x+'" y="'+(p.y+p.r+16).toFixed(1)+'" text-anchor="middle" font-size="10.5" fill="#a0a0a6" pointer-events="none">'+fd(p.w.km,1)+'</text>':'')+'</g>'});
     var sp=cpos[w.id];if(sp)s+='<circle class="ring sring" r="1" style="opacity:'+(shown?1:0)+';transform:translate('+sp.x+'px,'+sp.y+'px) scale('+(sp.r+7).toFixed(1)+')"/>';
     s+='</svg>';
@@ -673,7 +770,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     var yi=yrs.indexOf(sYear),ws=walks.filter(function(x){return new Date(x.fin).getFullYear()===sYear}),
         km=0,secs=0,pkm=0,mo=[],i,long=ws[0],hasTest=false;
     for(i=0;i<12;i++)mo.push(0);
-    ws.forEach(function(x){km+=x.km;mo[new Date(x.fin).getMonth()]+=x.km;if(x.km>long.km)long=x;if(x.test)hasTest=true;if(x.secs>0){secs+=x.secs;pkm+=x.km}});
+    ws.forEach(function(x){km+=x.km;mo[new Date(x.fin).getMonth()]+=x.km;if(x.km>long.km)long=x;if(x.secs>0){secs+=x.secs;pkm+=x.km}});
     var best=0;for(i=1;i<12;i++)if(mo[i]>mo[best])best=i;
     var steps=Math.round(km*1e5/(st.stride||75)),mx=mo[best]||1,
         pace=pkm>0?paceStr(secs/60/dv(pkm)):'—',
@@ -682,7 +779,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     for(i=0;i<12;i++){var h=mo[i]>0?Math.max(3,mo[i]/mx*44):1.5;
       bars+='<rect x="'+(i*20+3)+'" y="'+(50-h).toFixed(1)+'" width="14" height="'+h.toFixed(1)+'" rx="3" class="'+(i===best&&mo[i]>0?'hi':'')+'"><title>'+MN[i]+': '+fdu(mo[i],1)+'</title></rect><text x="'+(i*20+10)+'" y="64" text-anchor="middle">'+MN[i][0]+'</text>'}
     bars+='</svg>';
-    return '<div class="card stc"><div class="chead"><button class="nav" data-a="yprev" aria-label="Previous year"'+(yi<1?' disabled':'')+'>‹</button><div><b>'+sYear+' in review</b><span>'+ws.length+(ws.length===1?' walk':' walks')+(hasTest?' · includes test walks':'')+'</span></div><button class="nav" data-a="ynext" aria-label="Next year"'+(yi>=yrs.length-1?' disabled':'')+'>›</button></div>'
+    return '<div class="card stc"><div class="chead"><button class="nav" data-a="yprev" aria-label="Previous year"'+(yi<1?' disabled':'')+'>‹</button><div><b>'+sYear+' in review</b><span>'+ws.length+(ws.length===1?' walk':' walks')+''+'</span></div><button class="nav" data-a="ynext" aria-label="Next year"'+(yi>=yrs.length-1?' disabled':'')+'>›</button></div>'
       +'<div class="stats">'+stat(fd(km,1),uN()+' total')+stat(steps.toLocaleString(),'steps')+stat(fd(km/ws.length,1),uN()+' per walk')+'</div>'
       +'<div class="stats s2">'+stat(fdu(long.km,2),'longest · '+new Date(long.fin).toLocaleDateString([],{month:'short',day:'numeric'}))+stat(MN[best],'best month')+stat(pace,'min per '+uN())+'</div>'
       +bars+'<p class="cap">Pace uses walks with a recorded time. Pace counts moving time; walks imported earlier may still include pauses.</p></div>';
@@ -731,7 +828,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     if(k)return '<div class="pc b'+k+'">'+img+'<div class="pshade"></div></div>';
     var stp=Math.round(w.km*1e5/(st.stride||75)),dots='';
     if(ph.length>1)for(var i=0;i<ph.length;i++)dots+='<button class="dot'+(i===pi?' on':'')+'" data-d="'+i+'" aria-label="Photo '+(i+1)+'"></button>';
-    return '<div class="pc top'+(rise?' rise':'')+'" id="topcard">'+img+'<div class="pshade"></div><div class="proute">'+routeSVG2(w,300,270,30,'c')+'</div><div class="pdots">'+dots+'</div><button type="button" class="pshare" data-p="share" aria-label="Share this card as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><div class="pinfo"><b>'+fdu(w.km,2)+'</b><span>'+new Date(w.fin).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+' · '+stp.toLocaleString()+' steps</span></div></div>';
+    return '<div class="pc top'+(rise?' rise':'')+'" id="topcard">'+img+'<div class="pshade"></div><div class="proute">'+routeSVG2(w,300,270,30,'c')+'</div><div class="pdots">'+dots+'</div><button type="button" class="pshare" data-p="share" aria-label="Share this card as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><div class="pinfo"><b>'+fdu(w.km,2)+'</b><span>'+new Date(w.fin).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+' · '+stp.toLocaleString()+' steps</span>'+(w.note?'<p class="pnote">'+esc(w.note)+'</p>':'')+(w.tags&&w.tags.length?'<span class="ptags">'+w.tags.map(function(t){return '#'+esc(t)}).join(' ')+'</span>':'')+'</div></div>';
   }
   function renderCards(){
     var D=$('#deckArea'),E=$('#v1 .empty'),n=walks.length;
@@ -763,8 +860,9 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
       g.fillStyle='#ffffff';g.beginPath();g.arc(P[0][0],P[0][1],16,0,7);g.fill();
       var e=P[P.length-1];g.fillStyle='#ffd98a';g.shadowColor='#ffd98a';g.shadowBlur=24;g.beginPath();g.arc(e[0],e[1],20,0,7);g.fill();g.shadowBlur=0}
     var stp=Math.round(w.km*1e5/(st.stride||75)),d=new Date(w.fin).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
-    g.fillStyle='#fff';g.textBaseline='alphabetic';g.font='500 118px '+ff;g.fillText(fdu(w.km,2),64,H-140);
+    g.fillStyle='#fff';g.textBaseline='alphabetic';g.font='500 118px '+ff;g.fillText(fdu(w.km,2),64,H-(w.note?170:140));
     g.fillStyle='#ececec';g.font='300 44px '+ff;g.fillText(d+' · '+stp.toLocaleString()+' steps',64,H-72);
+    if(w.note){g.fillStyle='#ffd98a';g.font='300 38px '+ff;var nt=w.note.length>60?w.note.slice(0,58).trim()+'…':w.note;g.fillText(nt,64,H-14)}
     return cv}
   var sharing=false;
   async function shareCard(btn){
@@ -831,13 +929,13 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     e.target.value='';renderCards();
   });
   function loc(d){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}
-  var editId=null,editKmShown='';
+  var editId=null,editKmShown='',editMinShown='';
   function openSheet(w){
     var e=!!(w&&typeof w.km==='number');editId=e?w.id:null;
     rememberFocus();
     $('#mTitle').textContent=e?'Edit walk':'Add a walk by hand';$('#mSave').textContent=e?'Save changes':'Save walk';
     $('#mSkRow').style.display=!e||w.manual?'':'none';$('#mSk').checked=e?!!w.sketch:true;
-    $('#mKm').value=editKmShown=e?(+dv(w.km).toFixed(2)).toString():'';$('#mNote').value=e&&w.note?w.note:'';$('#mTags').value=e&&w.tags?w.tags.join(', '):'';tagSug();$('#mKmL').textContent='Distance ('+uN()+')';$('#mKm').max=st.unit==='mi'?124:200;$('#mMin').value=e&&w.secs?Math.round(w.secs/60):'';$('#mWhen').value=loc(new Date(e?w.fin:Date.now()));$('#sheet').classList.add('on');trapEl=$('#sheet .panel');setTimeout(function(){$('#mKm').focus()},400)}
+    $('#mKm').value=editKmShown=e?(+dv(w.km).toFixed(2)).toString():'';$('#mNote').value=e&&w.note?w.note:'';$('#mTags').value=e&&w.tags?w.tags.join(', '):'';tagSug();$('#mKmL').textContent='Distance ('+uN()+')';$('#mKm').max=st.unit==='mi'?124:200;$('#mMin').value=editMinShown=e&&w.secs?Math.round(w.secs/60):'';$('#mWhen').value=loc(new Date(e?w.fin:Date.now()));$('#sheet').classList.add('on');trapEl=$('#sheet .panel');setTimeout(function(){$('#mKm').focus()},400)}
   function allTags(){var c={};walks.forEach(function(w){(w.tags||[]).forEach(function(t){c[t]=(c[t]||0)+1})});
     return Object.keys(c).sort(function(a,b){return c[b]-c[a]||(a<b?-1:1)})}
   function tagSug(){var cur=parseTags($('#mTags').value),box=$('#mTagSug');box.textContent='';
@@ -848,17 +946,22 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
   $('#mCancel').onclick=closeSheet;
   $('#sheet').addEventListener('click',function(e){if(e.target.id==='sheet')closeSheet()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#sheet').classList.contains('on'))closeSheet();else if($('#hk').classList.contains('on'))hkClose();else if(popOpen)closePop();else if(sqOn)closeSearch(true)}});
+  $('#sheet').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();$('#mSave').click()}});
   $('#mSave').onclick=function(){
     var kv=$('#mKm').value,km=parseFloat(kv),fin=Date.parse($('#mWhen').value),mn=parseInt($('#mMin').value,10);
     if(editId&&kv===editKmShown){var ow0=walks.filter(function(x){return x.id===editId})[0];if(ow0)km=ow0.km}   /* untouched distance keeps its exact stored value */
     else if(st.unit==='mi')km=km*KMI;
-    if(!(km>=0.1&&km<=200)){toast('Enter a distance between '+(st.unit==='mi'?'0.1 and 124 mi':'0.1 and 200 km'));return}
+    var kmSame=!!editId&&kv===editKmShown;
+    if(!kmSame&&!(km>=0.1&&km<=200)){toast('Enter a distance between '+(st.unit==='mi'?'0.1 and 124 mi':'0.1 and 200 km'));return}
     var note=$('#mNote').value.trim().slice(0,280),tags=parseTags($('#mTags').value);
     if(isNaN(fin))fin=Date.now();
-    if(fin>Date.now()+6e4){toast('That time is in the future');return}
+    var oldW=editId?walks.filter(function(x){return x.id===editId})[0]:null,finSame=oldW&&Math.abs(oldW.fin-fin)<6e4;
+    if(!finSame&&fin>Date.now()+6e4){toast('That time is in the future');return}
+    if(finSame)fin=oldW.fin;   /* untouched time keeps its exact value */
     if(editId){   /* editing keeps the walk's id, so re-importing the same GPX is still ignored */
       var ow=walks.filter(function(x){return x.id===editId})[0],oi=walks.indexOf(ow);if(!ow){closeSheet();return}
-      var nw=Object.assign({},ow,{km:+km.toFixed(2),fin:fin,secs:mn>0?mn*60:0});
+      var minSame=$('#mMin').value===String(editMinShown),
+          nw=Object.assign({},ow,{km:kmSame?ow.km:+km.toFixed(2),fin:fin,secs:minSame?ow.secs:(mn>0?mn*60:0)});   /* untouched values keep exact stored precision */
       if(note)nw.note=note;else delete nw.note;if(tags.length)nw.tags=tags;else delete nw.tags;
       if(ow.manual){
         if($('#mSk').checked&&!nw.pts){var k2=sketchRoute(nw.id);nw.pts=k2.pts;nw.w=k2.w;nw.h=k2.h;nw.sketch=true}
@@ -883,20 +986,10 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     for(i=0;i<=n;i++)pts.push([+((xs[i]-x0)/s).toFixed(4),+((ys[i]-y0)/s).toFixed(4)]);
     return {pts:pts,w:(x1-x0)/s,h:(y1-y0)/s};
   }
-  function testWalk(){
-    var n=70,ph=Math.random()*6.28,a=1+Math.random()*.6,xs=[],ys=[],pts=[],i;
-    for(i=0;i<=n;i++){var t=i/n*6.283,r=1+.28*Math.sin(3*t+ph)+.14*Math.sin(5*t);xs.push(Math.cos(t)*r*a);ys.push(Math.sin(t)*r)}
-    var x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys),s=Math.max(x1-x0,y1-y0);
-    for(i=0;i<=n;i++)pts.push([+((xs[i]-x0)/s).toFixed(4),+((ys[i]-y0)/s).toFixed(4)]);
-    var km=+(3+Math.random()*6).toFixed(2),fin=Date.now()-Math.floor(Math.random()*45)*864e5-Math.floor(Math.random()*18e6);
-    return {id:'t'+fin+'-'+Math.round(km*1000),fin:fin,km:km,secs:Math.round(km*11*60),pts:pts,w:(x1-x0)/s,h:(y1-y0)/s,test:true};
-  }
-  $('#tAdd').onclick=function(){var w=testWalk();walks.push(w);sel=w.id;if(!saveW()){walks.pop();toast('Storage is full');return}renderWalks();toast('Test walk added')};
-  $('#tRm').onclick=function(){var n=walks.length;walks.forEach(function(x){if(x.test)delPhotos(x.id)});walks=walks.filter(function(x){return !x.test});sel=null;shown=false;saveW();renderWalks();toast(n-walks.length?'Test walks removed':'No test walks to remove')};
   $('#manEmpty').onclick=openSheet;
   function toast(m,act){var t=$('#toast');t.textContent=m;
     if(act){var b=document.createElement('button');b.type='button';b.className='tundo';b.textContent=act.label;b.onclick=function(){t.classList.remove('on');act.fn()};t.appendChild(b)}
-    t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove('on')},act?6000:3400)}
+    t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove('on')},act?10000:3400)}
   /* tap a star: ring glides over, light pulses down its connections, a spark flies into the route card and the route draws */
   function rm(n){if(n&&n.parentNode)n.parentNode.removeChild(n)}
   function starEl(cs,id){var l=cs.querySelectorAll('.star');for(var i=0;i<l.length;i++)if(l[i].getAttribute('data-id')===id)return l[i];return null}
@@ -1023,8 +1116,10 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     var pb=t.closest('[data-p]');
     if(pb){if(!pb.disabled)flipPop(pb.dataset.p==='next'?1:-1);return}
     var b=t.closest('button');
-    if(b&&b.dataset.a==='del'){var did=sel;closePop();deleteWalk(did)}
-    else if(b&&b.dataset.a==='edit'){var ew=walks.filter(function(x){return x.id===sel})[0];closePop();if(ew)openSheet(ew)}
+    if(b&&b.dataset.a==='del'){
+      if(!b.classList.contains('arm')){b.classList.add('arm');b.dataset.t=b.textContent;b.textContent='Tap again to delete';clearTimeout(b._h);b._h=setTimeout(function(){b.classList.remove('arm');b.textContent=b.dataset.t},2800);return}
+      var did=sel;closePop();deleteWalk(did)}
+    else if(b&&b.dataset.a==='edit'){var ew=walks.filter(function(x){return x.id===sel})[0];closePop();if(ew)setTimeout(function(){openSheet(ew)},reduced()?0:300)}
   });
   document.addEventListener('keydown',function(e){
     if(!popOpen)return;
@@ -1086,27 +1181,30 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('star')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}))}
   });
   $('#gpx').addEventListener('change',async function(e){
-    var fs=[].slice.call(e.target.files),fresh=[],bad=0,dup=0;
+    var fs=[].slice.call(e.target.files),fresh=[],bad=0,dup=0,nots=0;
     for(var i=0;i<fs.length;i++){
       try{var w=parseGPX(await fs[i].text(),fs[i].lastModified);
-        if(!w)bad++;else if(walks.some(function(x){return x.id===w.id}))dup++;else{walks.push(w);fresh.push(w)}}
+        if(!w)bad++;else if(walks.some(function(x){return x.id===w.id}))dup++;else{if(w.nots)nots++;delete w.nots;walks.push(w);fresh.push(w)}}
       catch(x){bad++}
     }
     e.target.value='';
     if(fresh.length&&!saveW()){walks=walks.filter(function(x){return fresh.indexOf(x)<0});renderWalks();toast('Storage is full. Remove a photo or an old walk first');return}
     if(fresh.length){var nw=fresh.reduce(function(p,q){return q.fin>p.fin?q:p});sel=nw.id;shown=false}
     renderWalks();
-    toast(fresh.length?fresh.length+(fresh.length>1?' walks':' walk')+' imported'+(dup?', '+dup+' already there':'')+(bad?', '+bad+' couldn’t be read':''):bad?'That file couldn’t be read as a GPX walk':'Those walks are already imported');
+    toast(fresh.length?fresh.length+(fresh.length>1?' walks':' walk')+' imported'+(dup?', '+dup+' already there':'')+(bad?', '+bad+' couldn’t be read':'')+(nots?'. '+nots+(nots>1?' files have':' file has')+' no timestamps, so the file date was used. Tap Edit to fix the time.':''):bad?'That file couldn’t be read as a GPX walk':'Those walks are already imported');
   });
   function goalUI(){$('#goalIn').value=st.goal>0?+dv(st.goal).toFixed(1):'';$('#goalLbl').textContent='Monthly goal ('+uN()+', 0 for none)';$('#goalIn').placeholder=st.unit==='mi'?'e.g. 40':'e.g. 60'}
   goalUI();
+  $('#goalIn').addEventListener('change',function(){goalUI()});
   $('#goalIn').addEventListener('input',function(e){var v=e.target.value===''?0:parseFloat(e.target.value);if(v>=0&&v<=2000){st.goal=st.unit==='mi'?v*KMI:v;save();renderWalks()}});
-  function unitUI(){document.querySelectorAll('#unitSeg .btn').forEach(function(b){var on=b.dataset.u===uN();b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on?'true':'false')});goalUI();
+  function strideHint(){var k=st.unit==='mi'?KMI:1;$('#strideHint').textContent='Steps are estimated from distance and this length. At '+st.stride+' cm, 1 '+uN()+' is about '+Math.round(k*1e5/(st.stride||75)).toLocaleString()+' steps.'}
+  function unitUI(){strideHint();document.querySelectorAll('#unitSeg .btn').forEach(function(b){var on=b.dataset.u===uN();b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on?'true':'false')});goalUI();
     $('#sqIn').placeholder='Search: nov, monday, >'+(st.unit==='mi'?'3mi':'5km')+', photo'}
   unitUI();
   $('#unitSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!b.dataset.u)return;st.unit=b.dataset.u==='mi'?'mi':'km';save();unitUI();renderWalks()});
   $('#strideIn').value=st.stride;
-  $('#strideIn').addEventListener('input',function(e){var v=parseInt(e.target.value,10);if(v>=30&&v<=150){st.stride=v;save();renderWalks()}});
+  $('#strideIn').addEventListener('change',function(e){var v=parseInt(e.target.value,10);if(!(v>=30&&v<=150)){e.target.value=st.stride;toast('Stride length must be 30 to 150 cm')}});
+  $('#strideIn').addEventListener('input',function(e){var v=parseInt(e.target.value,10);if(v>=30&&v<=150){st.stride=v;save();strideHint();renderWalks()}});
 
   /* delete with undo */
   function deleteWalk(id){
@@ -1125,7 +1223,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
   function sWords(w){
     var d=new Date(w.fin),m=MON[d.getMonth()],dy=DAY[d.getDay()],a=[m,m.slice(0,3),''+d.getFullYear(),dy,dy.slice(0,3),''+d.getDate()].concat(kmWords(w));
     if(w.sketch)a.push('sketch','sketched');if(w.manual)a.push('manual','hand','added');else{a.push('imported');if(w.pts)a.push('gpx','route')}
-    if(w.test)a.push('test','sample');if(w.hk)a.push('health','apple');
+    if(w.hk)a.push('health','apple');
     if(w.photos&&w.photos.length)a.push('photo','photos');
     if(w.note){a.push('note','notes');w.note.toLowerCase().split(/[^a-z0-9\u00c0-\uffff]+/).forEach(function(x){if(x.length>1)a.push(x)})}
     if(w.tags&&w.tags.length){a.push('tagged');w.tags.forEach(function(t){a.push(t,'#'+t)})}
@@ -1155,7 +1253,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
       wd=wd||sWords(w);return wd.some(function(x){return x.indexOf(p.s)===0})})}
   function sRow(w){
     var d=new Date(w.fin),tg=[d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})],np=w.photos?w.photos.length:0;
-    if(w.secs)tg.push(dur(w.secs));if(w.manual)tg.push('by hand');if(w.hk)tg.push('Apple Health');if(w.tags&&w.tags.length)tg.push(w.tags.map(function(t){return '#'+esc(t)}).join(' '));if(w.note)tg.push('note');if(w.test)tg.push('test');if(np)tg.push(np+(np>1?' photos':' photo'));
+    if(w.secs)tg.push(dur(w.secs));if(w.manual)tg.push('by hand');if(w.hk)tg.push('Apple Health');if(w.tags&&w.tags.length)tg.push(w.tags.map(function(t){return '#'+esc(t)}).join(' '));if(w.note)tg.push('note');if(np)tg.push(np+(np>1?' photos':' photo'));
     return '<button type="button" class="sr" data-id="'+w.id+'"><div><b>'+d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric',year:d.getFullYear()===new Date().getFullYear()?undefined:'numeric'})+'</b><span>'+tg.join(' · ')+'</span></div><em>'+fdu(w.km,2)+'</em></button>'}
   function renderSearch(){
     var q=$('#sqIn').value.trim(),P=parseQ(q),L=$('#sqList'),M=$('#sqMeta'),box=$('#sqChips'),
@@ -1164,7 +1262,6 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     allTags().slice(0,3).forEach(function(t){ch.push(['#'+t,'#'+t])});
     if(walks.some(function(w){return w.photos&&w.photos.length}))ch.push(['With photos','photo']);
     if(walks.some(function(w){return w.manual}))ch.push(['By hand','manual']);
-    if(walks.some(function(w){return w.test}))ch.push(['Test walks','test']);
     box.textContent='';ch.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='chip'+(q.toLowerCase()===c[1]?' on':'');b.textContent=c[0];b.dataset.q=c[1];box.appendChild(b)});
     $('#sqClr').hidden=!q;L.textContent='';
     function msg(t){var p=document.createElement('p');p.className='sqempty';p.textContent=t;L.appendChild(p)}
@@ -1362,7 +1459,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
   /* backup reminder: shown on Home when there is no backup, or changes have piled up since an old one */
   var BK_DAYS=14,BK_SNOOZE=7*864e5;
   function bkDue(){
-    var real=walks.filter(function(w){return !w.test});if(!real.length)return null;
+    var real=walks;if(!real.length)return null;
     if(st.bkSnooze&&Date.now()<st.bkSnooze)return null;
     if(!st.lastBackup)return real.length>=3?{never:true,n:real.length}:null;
     var days=Math.floor((Date.now()-st.lastBackup)/864e5);
@@ -1403,7 +1500,9 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
 
   /* tabs with sliding indicator */
   var tabs=document.querySelectorAll('.tab'),views=document.querySelectorAll('.view');
+  var curTab=-1;
   function go(i){
+    var prevTab=curTab;curTab=i;
     tabs.forEach(function(t,k){
       var on=k===i;
       t.classList.toggle('on',on);
@@ -1413,10 +1512,16 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     views.forEach(function(v,k){
       var on=k===i;
       v.classList.toggle('on',on);
+      v.classList.toggle('before',k<i);
       if(on)v.removeAttribute('aria-hidden');else v.setAttribute('aria-hidden','true');
     });
-    $('#ind').style.transform='translateX('+(i*100)+'%)';
-    if(i===3)bkInfo();
+    /* cards of the new tab rise in one after another */
+    if(prevTab>=0&&prevTab!==i&&!reduced()&&views[i].animate){
+      views[i].querySelectorAll('.card,.sh,.deck,.dctl').forEach(function(el,k){
+        if(el.offsetParent===null)return;
+        el.animate([{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'none'}],{duration:520,delay:80+Math.min(k,7)*60,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'})})}
+    $('#ind').style.transform='translateX('+(i*100)+'%)';document.querySelector('.dock').style.setProperty('--i',i);
+    if(i===3){bkInfo();askPersist()}
   }
   tabs.forEach(function(t,k){t.onclick=function(){go(k)}});
   /* arrow keys move between tabs when a tab has focus */
@@ -1468,9 +1573,9 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
   var mq=window.matchMedia&&matchMedia('(prefers-color-scheme:dark)');
   if(mq){var onMq=function(){if((st.theme||'auto')==='auto')applyTheme()};if(mq.addEventListener)mq.addEventListener('change',onMq);else if(mq.addListener)mq.addListener(onMq)}
   var cv=$('#sky'),cx=cv.getContext('2d'),W,H,D=Math.min(window.devicePixelRatio||1,2);
-  function size(){W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);dots()}
+  function size(){W=lw=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);dots()}
   addEventListener('resize',function(){if(innerWidth!==lw)size()});
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)paint()});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){paint();renderProgress();bkBanner()}});
   /* Offline use and home-screen install. sw.js and the manifest must sit next to this file on an https host (or localhost).
      Opened from a file or inside the artifact viewer there is no service worker, and the app just works online as before. */
   (function(){
@@ -1487,7 +1592,7 @@ button.tg{font:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
     }).catch(function(){say('Offline use could not start in this browser. '+installNote)});
     window.addEventListener('offline',function(){toast('You’re offline. Everything still works.')});
   })();
-  applyTheme();paint();renderWalks();go(0);openPhotoDB();
+  applyTheme();paint();renderWalks();go(0);openPhotoDB();askPersist();
 })();
 </script>
 </body>

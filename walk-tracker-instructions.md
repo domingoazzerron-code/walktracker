@@ -184,7 +184,7 @@ Applies to every GPX import (and to the route files inside an Apple Health impor
 
 - **Files:** `walk-tracker.html`, `sw.js`, `manifest.webmanifest` and the four icons must sit in the same folder on an **https** host (GitHub Pages works) or on localhost. Opened from a file, or inside the artifact viewer, there is no service worker; the app works online as before and Settings says so.
 - **Head tags:** the page links the manifest, `apple-touch-icon.png` and `icon-192.png`, and has the iOS standalone tags (title "Walks").
-- **Service worker:** registered on load only where it can work. Pages are network first, so a new version arrives on the next online open and the cached copy is used offline. Fonts, icons and the manifest are cached first and refreshed in the background. The cache is named `cw-v3`; **bump this number in `sw.js` whenever the cached file list changes**.
+- **Service worker:** registered on load only where it can work. Pages are network first, so a new version arrives on the next online open and the cached copy is used offline. Fonts, icons and the manifest are cached first and refreshed in the background. The cache is named `cw-v5`; **bump this number in `sw.js` whenever the cached file list changes**.
 - **Feedback:** a one-time toast "Ready to use offline" the first time it is cached, and a toast "You're offline. Everything still works." when the connection drops.
 - **Settings, Data:** an "Offline and install" row shows the current state and the install steps.
 - **Important on iPhone:** the app installed to the Home Screen gets its own storage, separate from Safari. Export a backup in Safari first, then Restore backup in the installed app.
@@ -247,3 +247,47 @@ Built one task at a time. Each finished task is published to the live artifact a
 - Workflow: after every edit to `walk-tracker.html`, the live artifact is updated in the same step (same link) and this section is refreshed.
 - Earlier artifact links could no longer be opened (this happened again on 2026-11-25, and once more at the miles update), so this is a new link. In the artifact viewer, Export backup cannot download a file (the viewer blocks downloads); use the local file or a hosted copy for backups.
 - Note: data is stored per browser, so the live page and a local copy of the file keep separate walks. Use Export and Restore backup to move between them.
+
+## Logic and flow fixes (latest pass)
+
+- Editing a walk no longer fails when only the note or tags changed on a very short or future-stamped walk; untouched distance, time and minutes keep their exact stored values.
+- Edit from the popup opens the sheet after the popup has closed, so focus stays inside the sheet.
+- Star labels no longer read the unit twice.
+- The background no longer repaints on every mobile toolbar resize.
+- Greeting, goal and streaks refresh when the app returns to the foreground.
+- Invalid stride or goal values are reset when the field loses focus.
+- Service worker caches only successful pages; cache is `cw-v5`.
+- `index.html` is a copy of `walk-tracker.html`; keep them identical.
+
+## Update: notes on cards, no test walks, settings polish
+
+- Photocards show the walk's note (two lines) and tags under the steps, and the shared image carries the note.
+- Test walks are gone: the setting, the search chip and the code. Test walks saved earlier are deleted on next load.
+- Settings: consistent sub-headings, equal-width segments, a live steps-per-distance hint under stride length, "Use default" for the avatar, and a footer line.
+
+## Navbar layout (updated)
+
+Round search button on the left, four-tab pill on the right, same height, 12 px apart, nothing overlapping. Tabs are icons only (names stay as aria-labels), the highlight glides without overshoot, and a soft fade behind the dock keeps scrolling content from colliding with it. CSS is the last "navbar" block.
+
+## Navbar v3
+
+One floating pill with a raised round search button sitting in a curved cradle at its left end (SVG "goo" filter joins the shapes smoothly). Four icon tabs; the selected one is darker with a small dot under it. CSS is the last "navbar v3" block.
+
+## Navbar v4
+
+The selected tab is the raised, floating circle. It slides along the pill, and the curved cradle follows it (`--i` on `.dock` is set in `go()`). The circle uses the theme gradient (cyan, violet and gold in light; white and gold in dark). Search is a separate round button at the right.
+
+## Tab transitions
+
+Views slide in the direction of travel (outgoing fades fast, incoming fades in softly) and the new tab's cards rise in one after another. The floating circle, its cradle and the icon lift share one easing. Reduced-motion skips the card cascade.
+
+## Flow polish
+
+- Empty Home explains the three steps to get a walk in.
+- Enter saves the add/edit sheet (not inside the note box).
+- Delete needs a second tap ("Tap again to delete"); Undo now stays for 10 seconds.
+- A GPX without timestamps says so in the import toast, pointing to Edit.
+
+## Storage protection
+
+The app asks the browser to keep its data (`navigator.storage.persist()`) on load and the first time anything is saved. Settings, Data, Backup shows whether it was granted. Safari usually grants it only to a site added to the Home Screen, so the backup reminder stays.
