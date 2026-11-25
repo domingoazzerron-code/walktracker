@@ -290,3 +290,16 @@ Views slide in the direction of travel (outgoing fades fast, incoming fades in s
 ## Storage protection
 
 The app asks the browser to keep its data (`navigator.storage.persist()`) on load and the first time anything is saved. Settings, Data, Backup shows whether it was granted. Safari usually grants it only to a site added to the Home Screen, so the backup reminder stays.
+
+## Update: splash screen
+
+- A black splash shows on launch: the glowing star pops in, the small stars and lines draw, then the name and tagline fade up. It dismisses itself after about 2 seconds, or on tap or key press.
+- It shows once per session (a reload in the same session skips it) and is shorter with reduced motion.
+- `splash/` holds iOS launch images (black with the app icon) for common iPhone sizes, linked from the head with `apple-touch-startup-image`. Android builds its own from the manifest colour and icon.
+- Service worker cache is `cw-v26`.
+
+## Update: light theme readability
+
+- Light theme is now a dirty white (`#e9e7e2`) instead of near-white, with a softer background dot map.
+- Glass cards in light theme are about 90% opaque with a blur behind them, so the map dots and stars no longer show through the text. Muted text is slightly darker. The dock, panels and toasts use the same warm off-white.
+- Dark theme gets the same treatment: cards are about 86% opaque near-black with a blur behind them, so the map dots no longer show through the text.
