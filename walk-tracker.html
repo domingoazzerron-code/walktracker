@@ -314,6 +314,7 @@ input[type=text],input[type=number],input[type=datetime-local]{background:var(--
 .gnum{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-top:6px}.gnum b{font-size:34px;font-weight:500}.gnum span{color:var(--mute);font-size:15px}
 .bar{height:10px;border-radius:99px;background:var(--field,rgba(255,255,255,.08));overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--g2),var(--g3));transition:width .6s cubic-bezier(.2,.8,.2,1)}
 [hidden]{display:none!important}
+.snrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}.snrow small{display:block;opacity:.65;font-size:12.5px}#snList{max-height:52vh;overflow:auto;margin-top:8px}
 select{width:100%;font:inherit;font-size:16px;padding:11px 13px;border-radius:13px;color:var(--ink);background:var(--field);border:1px solid var(--line);outline:none}
 select:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(255,255,255,0.09)}
 #hkMsg{margin-top:6px;color:var(--mute)}
@@ -462,6 +463,24 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   .view{padding-bottom:84px}.view>*:last-child{margin-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
 }
 @media (min-width:700px){.dock{width:min(460px,calc(100% - 48px))}}
+#progArea .pvseg{margin:0 0 12px}#progArea .pvseg .btn{flex:1}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:14px}
+.cal .dw{text-align:center;font-size:11.5px;color:var(--mute);padding-bottom:2px}
+.cal .cd{position:relative;aspect-ratio:1;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:none;font:inherit;font-size:13.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.cal .cd>span{position:relative}
+.cal .cd i{position:absolute;inset:2px;border-radius:50%;background:var(--gold)}
+.cal .cd.l1 i{opacity:.3}.cal .cd.l2 i{opacity:.55}.cal .cd.l3 i{opacity:1}.cal .cd.l3>span{color:#1b1b1b}
+.cal .cd.w{cursor:pointer;font-weight:600}
+.cal .cd.today{box-shadow:inset 0 0 0 1.5px var(--ink)}.cal .cd.sel{box-shadow:inset 0 0 0 2px var(--cyan)}
+.recs{margin-top:6px}
+.rec{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:13px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left}
+.rec:first-child{border-top:0}button.rec{cursor:pointer}
+.rec small{display:block;color:var(--mute);font-size:12.5px;margin-top:2px}
+.rec b{font-size:18px;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+#mgList{max-height:44vh;overflow:auto;margin-top:8px}
+.mgrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px;cursor:pointer}
+.mgrow input{width:20px;height:20px;flex:none}.mgrow span{flex:1}.mgrow small{display:block;opacity:.65;font-size:12.5px}.mgrow b{font-weight:500;font-variant-numeric:tabular-nums}
+#mgDel.arm{border-color:var(--dng);color:var(--dng)}
 </style>
 </head>
 <body>
@@ -519,13 +538,17 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
         <h3>Apple Health</h3>
         <p>Health, tap your picture, Export All Health Data, then pick the export.zip here. Time is Apple’s active time, so pauses are not counted.</p>
         <div class="row"><button class="btn" id="hkBtn">Import Apple Health export</button><input type="file" id="hkFile" accept=".zip,.xml,application/zip,text/xml" hidden></div>
-        <div class="sub"><h3>Backup</h3><p>Your walks live only in this browser. Save a copy to keep them safe or move them to another device.</p><div class="row nw"><button class="btn" id="bkExp">Export backup</button><button class="btn" id="bkImp">Restore backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div><p id="bkInfo" class="hint"></p><p id="pStore" class="hint"></p></div><div class="sub"><h3>Offline and install</h3><p id="pwaInfo">Checking…</p></div>
+        <div class="sub"><h3>Backup</h3><p>Your walks live only in this browser. Save a copy to keep them safe or move them to another device.</p><div class="row nw"><button class="btn" id="bkExp">Export backup</button><button class="btn" id="bkImp">Restore backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div><p id="bkInfo" class="hint"></p><p id="pStore" class="hint"></p><div class="row"><button class="btn" id="snBtn">Snapshots on this device</button></div><p id="snInfo" class="hint"></p></div><div class="sub" id="gdBox"><h3>Google Drive backup</h3><p id="gdIntro">Keep an automatic copy of your walks and photos in a private, hidden folder of your own Google Drive. The app cannot see any other file in your Drive. Walks on this device are uploaded; nothing is downloaded or changed here.</p><p id="gdSetup" class="hint" hidden>Google Drive backup is not set up in this copy of the app yet.</p><div class="row" id="gdConnRow"><button class="btn" id="gdConn">Connect Google Drive</button></div><p id="gdStat" class="hint" role="status" aria-live="polite"></p><div id="gdOn" hidden><div class="row nw"><button class="btn" id="gdNow">Back up now</button><button class="btn" id="gdOff">Disconnect</button></div><div class="row"><label class="chk"><input type="checkbox" id="gdPh"> Include photos</label></div><div class="row"><button class="btn" id="gdDel">Delete cloud copy</button></div></div></div><div class="sub"><h3>Manage walks</h3><p>Pick several walks and delete them together, for example after a big import.</p><div class="row"><button class="btn" id="mgBtn">Select walks</button></div></div><div class="sub"><h3>Offline and install</h3><p id="pwaInfo">Checking…</p></div>
       </div>
-      <p class="sfoot">Constellation Walks · everything stays on this device</p>
+      <p class="sfoot" id="sFoot">Constellation Walks · everything stays on this device</p>
     </section>
   </main>
 
   <div class="sheet" id="sheet"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="mTitle"><h2 id="mTitle">Add a walk by hand</h2><div class="fld"><label for="mKm" id="mKmL">Distance (km)</label><input type="number" id="mKm" step="0.01" min="0.1" max="200" inputmode="decimal" placeholder="e.g. 6.5"></div><div class="fld"><label for="mWhen">Finished at</label><input type="datetime-local" id="mWhen"></div><div class="fld"><label for="mMin">Time walked in minutes (optional)</label><input type="number" id="mMin" min="1" max="600" inputmode="numeric"></div><div class="fld"><label for="mSteps">Steps (optional, leave empty to estimate)</label><input type="number" id="mSteps" min="1" max="200000" inputmode="numeric" placeholder="e.g. 7164"></div><div class="fld"><label for="mNote">Note (optional)</label><textarea id="mNote" rows="3" maxlength="280" placeholder="How was it?"></textarea></div><div class="fld"><label for="mTags">Tags (optional, separated by commas)</label><input type="text" id="mTags" maxlength="90" placeholder="e.g. morning, dog, park" autocapitalize="none" autocomplete="off"><div class="tags" id="mTagSug"></div></div><div class="fld" id="mSkRow"><label class="chk"><input type="checkbox" id="mSk" checked> Add a sketched route (not real GPS)</label></div><div class="row"><button class="btn pri" id="mSave">Save walk</button><button class="btn" id="mCancel">Cancel</button></div></div></div>
+  <div class="sheet" id="gdC"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="gdCT"><h2 id="gdCT"></h2><p id="gdCM"></p><div class="row"><button class="btn pri" id="gdCOk"></button><button class="btn" id="gdCNo">Cancel</button></div></div></div>
+  <div class="sheet" id="snS"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="snTitle"><h2 id="snTitle">Snapshots on this device</h2><p>Automatic copies kept inside this browser. They protect against mistakes, but not against the browser clearing this site’s data, so keep exporting backups too.</p><div id="snList"></div><div class="row"><button class="btn" id="snClose">Close</button></div></div></div>
+  <div class="sheet" id="mgS"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="mgTitle"><h2 id="mgTitle">Select walks</h2><p id="mgInfo" class="hint"></p><div class="chips" id="mgChips"></div><div id="mgList"></div><div class="row"><button class="btn" id="mgDel" disabled>Delete selected</button><button class="btn" id="mgClose">Close</button></div></div></div>
+  <div class="sheet" id="bkR"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="bkRTitle"><h2 id="bkRTitle">Restore backup</h2><p id="bkRMsg"></p><div class="row"><button class="btn pri" id="bkRAdd">Add missing walks</button><button class="btn" id="bkRRep">Replace everything</button><button class="btn" id="bkRCancel">Cancel</button></div></div></div>
   <div class="sheet" id="hk"><div class="panel" role="dialog" aria-modal="true" aria-labelledby="hkTitle"><h2 id="hkTitle">Apple Health import</h2><p id="hkMsg"></p><div class="bar" id="hkBarW" hidden><i id="hkBar" style="width:0"></i></div><div class="fld" id="hkOpt" hidden><label for="hkRange">Import walks from</label><select id="hkRange"></select></div><div class="row"><button class="btn pri" id="hkGo" hidden>Import</button><button class="btn" id="hkCancel">Cancel</button></div></div></div>
   <div class="pop" id="pop"><div class="pscrim"></div><div class="card pcard" id="pcard" role="dialog" aria-modal="true" aria-label="Walk details" aria-labelledby="pTitle"></div></div>
   <div class="toast" id="toast" role="status"></div>
@@ -550,6 +573,9 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
+  /* Google Drive backup: paste the OAuth client ID from Google Cloud Console between the quotes (see the guide, section 4.2). Not a secret. */
+  var GD_CLIENT_ID='';
+  var gd={tok:null,exp:0,busy:false,again:false,state:'',err:'',prog:'',note:'',timer:0,noSilent:false,loading:false};
   var KEY='cw:profile';
   var st={name:'',avatar:{t:'emoji',v:'✦'},stride:75};
   try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object')st=Object.assign(st,p)}}catch(e){}
@@ -643,7 +669,8 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
            photos:Array.isArray(x.photos)?x.photos.filter(function(p){return typeof p==='string'&&p.indexOf('data:image/')===0}).slice(0,6):[]};
     if(typeof x.note==='string'&&x.note.trim())w.note=x.note.trim().slice(0,280);
     var tg=tagList(x.tags);if(tg.length)w.tags=tg;
-    if(x.manual)w.manual=true;if(x.sketch)w.sketch=true;if(x.hk)w.hk=true;if(isN(x.steps)&&x.steps>0)w.steps=Math.round(x.steps);return w}
+    if(x.manual)w.manual=true;if(x.sketch)w.sketch=true;if(x.hk)w.hk=true;if(isN(x.steps)&&x.steps>0)w.steps=Math.round(x.steps);
+    w.u=isN(x.u)&&x.u>0?Math.round(x.u):x.fin;return w}
   function wsteps(w){return isN(w.steps)&&w.steps>0?w.steps:Math.round(w.km*1e5/(st.stride||75))}
   var oldTest=[];
   try{var wr=localStorage.getItem(WK);if(wr){var wa=JSON.parse(wr),seen={};if(Array.isArray(wa))wa.forEach(function(x){var w=clean(x);if(x&&x.test){oldTest.push(String(x.id))}else if(w&&!seen[w.id]){seen[w.id]=1;walks.push(w)}})}}catch(e){}
@@ -663,13 +690,35 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     if(!(navigator.storage&&navigator.storage.persist)){pState='na';showPersist();return}
     try{var ok=await navigator.storage.persisted();if(!ok&&!pAsked){pAsked=true;ok=await navigator.storage.persist()}pState=ok?'yes':'no'}catch(e){pState='na'}
     showPersist()}
-  function touch(){st.chg=Date.now();save();if(!pAsked&&pState!=='yes')askPersist()}
-  function saveW(){touch();try{localStorage.setItem(WK,JSON.stringify(walks,function(k,v){return k==='photos'&&idbOK&&Array.isArray(v)?undefined:v}));return true}catch(e){return false}}
+  function touch(){st.chg=Date.now();save();if(!pAsked&&pState!=='yes')askPersist();gdQueue()}
+  /* data format v2: every walk carries u (time it last changed) and deletions are remembered in cw:deleted. Sync will need both. */
+  var TK='cw:deleted',tombs=[],known={},TOMB_MAX=5000,TOMB_AGE=365*864e5;
+  try{var ta=JSON.parse(localStorage.getItem(TK)||'[]');if(Array.isArray(ta))tombs=ta.filter(function(t){return t&&typeof t.id==='string'&&isN(t.at)}).slice(0,TOMB_MAX)}catch(e){}
+  function wsig(w){   /* what a walk looks like apart from u; photos count once they have loaded */
+    var o={},ph=photosReady?(w.photos||[]):[];
+    Object.keys(w).sort().forEach(function(k){if(k!=='u'&&k!=='photos')o[k]=w[k]});
+    return JSON.stringify(o)+'|'+ph.length+':'+ph.map(function(p){return p.length+p.slice(-24)}).join(',')}
+  function wReseed(){known={};walks.forEach(function(w){known[w.id]=wsig(w)})}
+  function wStamp(){   /* stamps changed walks, notes deleted ones; nothing is kept until the save works */
+    var now=Date.now(),tm={},ids={},nk={},next;
+    tombs.forEach(function(t){tm[t.id]=t.at});
+    walks.forEach(function(w){var sg=wsig(w);ids[w.id]=1;nk[w.id]=sg;
+      if(!isN(w.u))w.u=now;
+      else if(known[w.id]!==undefined){if(known[w.id]!==sg)w.u=now}
+      else if(tm[w.id]!==undefined&&tm[w.id]>=w.u)w.u=now});   /* a deleted walk that comes back counts as a new change */
+    next=tombs.filter(function(t){return !ids[t.id]&&t.at>now-TOMB_AGE});
+    Object.keys(known).forEach(function(id){if(!ids[id])next.push({id:id,at:now})});
+    next.sort(function(a,b){return b.at-a.at});if(next.length>TOMB_MAX)next.length=TOMB_MAX;
+    return {known:nk,tombs:next}}
+  wReseed();if(st.schema!==2){st.schema=2;save()}
+  function saveW(){touch();var r=wStamp();
+    try{localStorage.setItem(WK,JSON.stringify(walks,function(k,v){return k==='photos'&&idbOK&&Array.isArray(v)?undefined:v}));
+      known=r.known;tombs=r.tombs;try{localStorage.setItem(TK,JSON.stringify(tombs))}catch(e){}return true}catch(e){return false}}
   function openPhotoDB(){
     if(!window.indexedDB)return;
-    var r;try{r=indexedDB.open('cw-photos',1)}catch(e){photosReady=true;return}
+    var r;try{r=indexedDB.open('cw-photos',1)}catch(e){photosReady=true;wReseed();gdKick();return}
     r.onupgradeneeded=function(){if(!r.result.objectStoreNames.contains('p'))r.result.createObjectStore('p')};
-    r.onerror=r.onblocked=function(){photosReady=true};
+    r.onerror=r.onblocked=function(){photosReady=true;wReseed();gdKick()};
     r.onsuccess=async function(){
       db=r.result;
       try{
@@ -681,7 +730,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
           if(Array.isArray(v))w.photos=v.filter(function(p){return typeof p==='string'&&p.indexOf('data:image/')===0}).slice(0,6)}
       }catch(e){if(!idbOK)toast('Photos will be kept in the old storage on this device')}
       oldTest.forEach(delPhotos);if(oldTest.length){oldTest=[];saveW()}
-      photosReady=true;renderWalks();bkInfo();
+      photosReady=true;wReseed();gdKick();renderWalks();bkInfo();snAuto();
     };
   }
   function rad(d){return d*Math.PI/180}
@@ -799,7 +848,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   function detailHTML(w){
     var steps=wsteps(w),
         fin=new Date(w.fin).toLocaleString([],{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-    return '<div class="wc"><div class="rwrap">'+routeSVG(w)+'</div><div class="stats">'+stat(fd(w.km,2),uN())+stat(steps.toLocaleString(),'steps')+stat(dur(w.secs),'time')+'</div><p class="fin">Finished '+fin+(w.sketch?' · sketched route':'')+'</p>'+(w.note?'<p class="wnote">'+esc(w.note)+'</p>':'')+(w.tags&&w.tags.length?'<div class="tags">'+w.tags.map(function(t){return '<span class="tg">#'+esc(t)+'</span>'}).join('')+'</div>':'')+'</div>';
+    return '<div class="wc"><div class="rwrap">'+routeSVG(w)+'</div><div class="stats">'+stat(fd(w.km,2),uN())+stat(steps.toLocaleString(),'steps')+stat(dur(w.secs),'time')+'</div><p class="fin">Finished '+fin+(w.secs>0&&w.km>=.05?' · '+paceStr(w.secs/60/dv(w.km))+' min/'+uN()+' pace':'')+(w.sketch?' · sketched route':'')+'</p>'+(w.note?'<p class="wnote">'+esc(w.note)+'</p>':'')+(w.tags&&w.tags.length?'<div class="tags">'+w.tags.map(function(t){return '<span class="tg">#'+esc(t)+'</span>'}).join('')+'</div>':'')+'</div>';
   }
   /* stats card: year totals, longest walk, best month, average pace, and a bar per month */
   var sYear=null;
@@ -835,7 +884,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     return {cur:cur,best:best}}
   function goalBody(kmRaw,goalKm,aria,left,leftWord,none,act,btn){
     var g=dv(goalKm),km=dv(kmRaw),gt=+g.toFixed(1),pct=g>0?Math.min(100,Math.round(km/g*100)):0;
-    return g>0?'<div class="gnum"><b>'+km.toFixed(1)+'</b><span>of '+gt+' '+uN()+'</span></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+gt+'" aria-valuenow="'+Math.min(km,g).toFixed(1)+'" aria-label="'+aria+'"><i style="width:'+pct+'%"></i></div><p class="cap">'+(km>=g?'Goal reached. Anything more is a bonus.':(g-km).toFixed(1)+' '+uN()+' to go · '+left+(left===1?' day':' days')+' left')+'</p>'
+    return g>0?'<div class="gnum"><b>'+km.toFixed(1)+'</b><span>of '+gt+' '+uN()+'</span></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+gt+'" aria-valuenow="'+Math.min(km,g).toFixed(1)+'" aria-label="'+aria+'"><i style="width:'+pct+'%"></i></div><p class="cap">'+(km>=g?'Goal reached. Anything more is a bonus.':(g-km).toFixed(1)+' '+uN()+' to go · '+(left<1?'last day':left+(left===1?' day':' days')+' left'))+'</p>'
       :'<p class="cap">'+none+'</p><div class="row" style="justify-content:center"><button class="btn" data-a="'+act+'">'+btn+'</button></div>'}
   function progressHTML(){
     var now=new Date(),mk=mkey(now.getTime()),km=0,wkm=0,sk=streaks(),
@@ -858,7 +907,68 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
         list='<div class="card"><h2>Walks in '+mn+'</h2><div class="row nw"><button class="btn" data-a="imp">Import</button><button class="btn" data-a="man">Add by hand</button></div><div class="list" role="list">'+mw.map(function(x){var dt=new Date(x.fin).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});return '<button class="item'+(shown&&x.id===w.id?' on':'')+'" data-id="'+x.id+'" role="listitem" aria-label="'+dt+', '+fdu(x.km,2)+'"'+(shown&&x.id===w.id?' aria-current="true"':'')+'><span>'+dt+'</span><b>'+fdu(x.km,2)+'</b></button>'}).join('')+'</div></div>';
     A.innerHTML=constHTML(w)+list;
   }
-  function renderProgress(){var P=$('#progArea');if(P)P.innerHTML=progressHTML()+statsHTML();hdrUpdate()}
+  /* Progress has three views behind one switch: Overview (goals, streaks, year), Calendar, Records */
+  var pView='ov',calM=null,calSel=null;
+  function pvSeg(){return '<div class="row seg nw pvseg" role="group" aria-label="Progress views">'+[['ov','Overview'],['cal','Calendar'],['rec','Records']].map(function(v){
+    return '<button type="button" class="btn'+(pView===v[0]?' sel':'')+'" data-a="pv" data-v="'+v[0]+'" aria-pressed="'+(pView===v[0])+'">'+v[1]+'</button>'}).join('')+'</div>'}
+  function calDay(d){var y=Math.floor(calM/12),m=calM%12;
+    return walks.filter(function(w){var x=new Date(w.fin);return x.getFullYear()===y&&x.getMonth()===m&&x.getDate()===d}).sort(function(a,b){return a.fin-b.fin})}
+  function calHTML(){
+    var now=new Date(),tk=mkey(now.getTime()),ks=walks.map(function(w){return mkey(w.fin)}),
+        lo=Math.min.apply(null,ks.concat(tk)),hi=Math.max.apply(null,ks.concat(tk));
+    if(calM===null)calM=tk;
+    calM=Math.max(lo,Math.min(hi,calM));
+    var y=Math.floor(calM/12),m=calM%12,dim=new Date(y,m+1,0).getDate(),lead=(new Date(y,m,1).getDay()+6)%7,
+        by={},dk={},mx=0,tot=0,cnt=0,i,cells='',list='',
+        nm=new Date(y,m,1).toLocaleDateString([],{month:'long',year:'numeric'});
+    walks.forEach(function(w){var n=dayNo(w.fin);dk[n]=(dk[n]||0)+w.km;if(dk[n]>mx)mx=dk[n];
+      var d=new Date(w.fin);if(d.getFullYear()===y&&d.getMonth()===m){var k=d.getDate();by[k]=by[k]||{km:0,n:0};by[k].km+=w.km;by[k].n++}});
+    for(i=1;i<=dim;i++)if(by[i]){cnt++;tot+=by[i].km}
+    ['M','T','W','T','F','S','S'].forEach(function(l){cells+='<span class="dw" aria-hidden="true">'+l+'</span>'});
+    for(i=0;i<lead;i++)cells+='<span></span>';
+    for(i=1;i<=dim;i++){
+      var b=by[i],isT=y===now.getFullYear()&&m===now.getMonth()&&i===now.getDate(),
+          dt=new Date(y,m,i).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+      if(b){var lv=b.km>=mx*.66?3:b.km>=mx*.33?2:1;
+        cells+='<button type="button" class="cd w l'+lv+(isT?' today':'')+(calSel===i?' sel':'')+'" data-d="'+i+'" aria-label="'+dt+', '+fdu(b.km,1)+(b.n>1?', '+b.n+' walks':'')+'"><i></i><span>'+i+'</span></button>'}
+      else cells+='<span class="cd'+(isT?' today':'')+'"><span>'+i+'</span></span>'}
+    if(calSel&&by[calSel]&&by[calSel].n>1)
+      list='<div class="list" role="list" style="margin-top:12px">'+calDay(calSel).map(function(w){
+        var tm=new Date(w.fin).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+        return '<button type="button" class="item" data-id="'+w.id+'" role="listitem" aria-label="'+tm+', '+fdu(w.km,2)+'"><span>'+tm+'</span><b>'+fdu(w.km,2)+'</b></button>'}).join('')+'</div>';
+    return '<div class="card calc"><div class="chead"><button class="nav" data-a="cprev" aria-label="Previous month"'+(calM<=lo?' disabled':'')+'>‹</button><div><b>'+nm+'</b><span>'+(cnt?cnt+(cnt===1?' day':' days')+' walked · '+fdu(tot,1):'No walks this month')+'</span></div><button class="nav" data-a="cnext" aria-label="Next month"'+(calM>=hi?' disabled':'')+'>›</button></div><div class="cal">'+cells+'</div>'+list+'</div>'}
+  function dnFmt(n,o){return new Date(n*864e5).toLocaleDateString([],Object.assign({timeZone:'UTC'},o))}
+  function dnRange(a,b){
+    if(a===b)return dnFmt(a,{month:'short',day:'numeric',year:'numeric'});
+    var ya=new Date(a*864e5).getUTCFullYear(),yb=new Date(b*864e5).getUTCFullYear();
+    return dnFmt(a,ya===yb?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'})+' – '+dnFmt(b,{month:'short',day:'numeric',year:'numeric'})}
+  function bestRun(){
+    var set={};walks.forEach(function(w){set[dayNo(w.fin)]=1});
+    var days=Object.keys(set).map(Number).sort(function(a,b){return a-b}),best={n:0,s:0,e:0},run=0,r0=0,prev=null;
+    days.forEach(function(d){if(prev!==null&&d===prev+1)run++;else{run=1;r0=d}if(run>best.n)best={n:run,s:r0,e:d};prev=d});
+    return best}
+  function recRow(label,val,sub,id){
+    var inner='<span>'+label+'<small>'+sub+'</small></span><b>'+val+'</b>';
+    return id?'<button type="button" class="rec" data-id="'+id+'">'+inner+'</button>':'<div class="rec">'+inner+'</div>'}
+  function recsHTML(){
+    if(!walks.length)return '<div class="card"><h2>Personal records</h2><p class="cap">Your records show up after your first walk.</p></div>';
+    var longest=walks[0],fast=null,dayS={},wkK={},moK={},rows='',fmt={weekday:'short',month:'short',day:'numeric',year:'numeric'};
+    function top(o){var bk=null;Object.keys(o).forEach(function(k){if(bk===null||o[k]>o[bk])bk=k});return bk}
+    walks.forEach(function(w){
+      if(w.km>longest.km)longest=w;
+      if(w.secs>=300&&w.km>=1){var pc=w.secs/60/w.km;if(!fast||pc<fast.pc)fast={w:w,pc:pc}}
+      var dn=dayNo(w.fin),wk=dn-((new Date(w.fin).getDay()+6)%7),mk=mkey(w.fin);
+      dayS[dn]=(dayS[dn]||0)+wsteps(w);wkK[wk]=(wkK[wk]||0)+w.km;moK[mk]=(moK[mk]||0)+w.km});
+    rows+=recRow('Longest walk',fdu(longest.km,2),new Date(longest.fin).toLocaleDateString([],fmt),longest.id);
+    if(fast)rows+=recRow('Fastest pace',paceStr(fast.w.secs/60/dv(fast.w.km))+' min/'+uN(),fdu(fast.w.km,1)+' · '+new Date(fast.w.fin).toLocaleDateString([],fmt),fast.w.id);
+    var bd=top(dayS),bw=top(wkK),bm=top(moK),br=bestRun();
+    rows+=recRow('Most steps in a day',(+dayS[bd]).toLocaleString(),dnFmt(+bd,fmt));
+    rows+=recRow('Best week',fdu(wkK[bw],1),dnRange(+bw,+bw+6));
+    rows+=recRow('Best month',fdu(moK[bm],1),new Date(Math.floor(bm/12),bm%12,1).toLocaleDateString([],{month:'long',year:'numeric'}));
+    rows+=recRow('Longest streak',br.n+(br.n===1?' day':' days'),dnRange(br.s,br.e));
+    return '<div class="card"><h2>Personal records</h2><div class="recs">'+rows+'</div></div>'}
+  function renderProgress(){var P=$('#progArea');
+    if(P)P.innerHTML=pvSeg()+(pView==='cal'?calHTML():pView==='rec'?recsHTML():progressHTML()+statsHTML());hdrUpdate()}
   /* walks with no recorded route (added by hand, or built from Health distance records) get a stable decorative route on the photo card */
   var skCache={};
   function cardRoute(w){
@@ -953,7 +1063,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   function removePhoto(){
     var w=walks[ti],ph=w.photos||[];if(!ph.length)return;
     var i=Math.min(pIdx[w.id]||0,ph.length-1);var gone=ph.splice(i,1)[0];pIdx[w.id]=Math.max(0,i-1);
-    var ok=idbOK?putPhotos(w).then(function(){touch();return true},function(){return false}):Promise.resolve(saveW());
+    var ok=idbOK?putPhotos(w).then(function(){saveW();return true},function(){return false}):Promise.resolve(saveW());
     ok.then(function(good){if(!good){ph.splice(i,0,gone);toast('Couldn’t remove that photo');renderCards()}});renderCards();
   }
   $('#deckArea').addEventListener('click',function(e){
@@ -971,8 +1081,8 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     w.photos=w.photos||[];
     for(var i=0;i<fs.length;i++){
       if(w.photos.length>=6){toast('A card holds up to 6 photos');break}
-      try{var u=await shrink(fs[i]);w.photos.push(u);
-        var good;if(idbOK){try{await putPhotos(w);touch();good=true}catch(_){good=false}}else good=saveW();
+      try{var u=await shrink(fs[i]);if(walks.indexOf(w)<0)break;w.photos.push(u);
+        var good;if(idbOK){try{await putPhotos(w);saveW();good=true}catch(_){good=false}}else good=saveW();
         if(!good){w.photos.pop();toast('Your device has no room for more photos. Remove one first');break}
         pIdx[w.id]=w.photos.length-1}
       catch(x){toast('That photo couldn’t be read')}
@@ -996,7 +1106,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   function closeSheet(){if(!$('#sheet').classList.contains('on'))return;$('#sheet').classList.remove('on');trapEl=null;restoreFocus()}
   $('#mCancel').onclick=closeSheet;
   $('#sheet').addEventListener('click',function(e){if(e.target.id==='sheet')closeSheet()});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#sheet').classList.contains('on'))closeSheet();else if($('#hk').classList.contains('on'))hkClose();else if(popOpen)closePop();else if(sqOn)closeSearch(true)}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#sheet').classList.contains('on'))closeSheet();else if($('#hk').classList.contains('on'))hkClose();else if($('#mgS').classList.contains('on'))mgClose();else if($('#bkR').classList.contains('on'))bkRClose();else if($('#snS').classList.contains('on'))snClose();else if($('#gdC').classList.contains('on'))$('#gdCNo').click();else if(popOpen)closePop();else if(sqOn)closeSearch(true)}});
   $('#sheet').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();$('#mSave').click()}});
   $('#mSave').onclick=function(){
     var kv=$('#mKm').value,km=parseFloat(kv),fin=Date.parse($('#mWhen').value),mn=parseInt($('#mMin').value,10);
@@ -1007,7 +1117,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     var sraw=$('#mSteps').value.trim(),stp=sraw===''?0:parseInt(sraw,10);
     if(sraw!==''&&!(stp>=1&&stp<=200000)){toast('Steps must be between 1 and 200,000');return}
     var note=$('#mNote').value.trim().slice(0,280),tags=parseTags($('#mTags').value);
-    if(isNaN(fin))fin=Date.now();
+    if(isNaN(fin)){toast('Pick the date and time the walk finished');return}
     var oldW=editId?walks.filter(function(x){return x.id===editId})[0]:null,finSame=oldW&&Math.abs(oldW.fin-fin)<6e4;
     if(!finSame&&fin>Date.now()+6e4){toast('That time is in the future');return}
     if(finSame)fin=oldW.fin;   /* untouched time keeps its exact value */
@@ -1225,11 +1335,17 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     else if(b.dataset.a==='hk')$('#hkFile').click();
   });
   $('#progArea').addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b)return;
-    if(b.dataset.a==='setgoal'){go(3);setTimeout(function(){$('#goalIn').focus()},300)}
-    if(b.dataset.a==='setwgoal'){go(3);setTimeout(function(){$('#wgoalIn').focus()},300)}
-    else if(b.dataset.a==='yprev'||b.dataset.a==='ynext'){sYear+=b.dataset.a==='ynext'?1:-1;var ys=walks.map(function(x){return new Date(x.fin).getFullYear()});
-      while(ys.indexOf(sYear)<0&&sYear>1970&&sYear<2200)sYear+=b.dataset.a==='ynext'?1:-1;renderProgress()}
+    var b=e.target.closest('button');if(!b)return;var a=b.dataset.a;
+    function again(sel){var f=$('#progArea '+sel);if(f&&!f.disabled)f.focus({preventScroll:true})}
+    if(b.dataset.id){openResult(b.dataset.id);return}
+    if(a==='pv'){pView=b.dataset.v;calSel=null;renderProgress();$('#v2').scrollTop=0;again('[data-v="'+pView+'"]')}
+    else if(a==='cprev'||a==='cnext'){calM+=a==='cnext'?1:-1;calSel=null;renderProgress();again('[data-a="'+a+'"]')}
+    else if(b.classList.contains('cd')){var d=+b.dataset.d,dw=calDay(d);
+      if(dw.length===1)openResult(dw[0].id);else{calSel=calSel===d?null:d;renderProgress();again('.cd[data-d="'+d+'"]')}}
+    else if(a==='setgoal'){go(3);setTimeout(function(){$('#goalIn').focus()},300)}
+    else if(a==='setwgoal'){go(3);setTimeout(function(){$('#wgoalIn').focus()},300)}
+    else if(a==='yprev'||a==='ynext'){sYear+=a==='ynext'?1:-1;var ys=walks.map(function(x){return new Date(x.fin).getFullYear()});
+      while(ys.indexOf(sYear)<0&&sYear>1970&&sYear<2200)sYear+=a==='ynext'?1:-1;renderProgress()}
   });
   $('#impEmpty').onclick=function(){$('#gpx').click()};
   $('#walkArea').addEventListener('keydown',function(e){
@@ -1267,9 +1383,11 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   /* delete with undo */
   function deleteWalk(id){
     var i=walks.findIndex(function(x){return x.id===id});if(i<0)return;
-    var w=walks.splice(i,1)[0];if(sel===id){sel=null;shown=false}
-    saveW();delPhotos(w.id);renderWalks();
-    toast('Walk deleted',{label:'Undo',fn:function(){walks.push(w);sel=w.id;if(!saveW()){walks.pop();toast('Storage is full, couldn’t restore it');return}putPhotos(w).catch(function(){toast('Walk restored, but its photos couldn’t be')});renderWalks()}});
+    var w=walks.splice(i,1)[0];
+    if(!saveW()){walks.splice(i,0,w);toast('Couldn’t delete that walk. Storage isn’t responding');return}
+    if(sel===id){sel=null;shown=false}
+    delPhotos(w.id);renderWalks();
+    toast('Walk deleted',{label:'Undo',fn:function(){if(walks.some(function(x){return x.id===w.id})){toast('That walk is already back');return}walks.push(w);sel=w.id;if(!saveW()){walks.pop();toast('Storage is full, couldn’t restore it');return}putPhotos(w).catch(function(){toast('Walk restored, but its photos couldn’t be')});renderWalks()}});
   }
 
   /* search: month, weekday, day, distance (6.5, 5km, >5km, <3km), today/yesterday/week/month, photo, manual, test */
@@ -1329,7 +1447,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     if(res.length)L.innerHTML=res.slice(0,cap).map(sRow).join('');else msg('Nothing matches “'+q+'”. Try a month, a weekday, or a distance like >'+(st.unit==='mi'?'3mi':'5km')+'.');
   }
   function openSearch(){
-    if(sqOn||popOpen||$('#sheet').classList.contains('on'))return;
+    if(sqOn||popOpen||document.querySelector('.sheet.on'))return;
     rememberFocus();sqOn=true;$('#sqIn').value='';renderSearch();
     $('#sq').classList.add('on');$('#sbtn').classList.add('on');$('#sbtn').setAttribute('aria-expanded','true');
     trapEl=$('#sq .sqpanel');
@@ -1559,15 +1677,18 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     $('#hkOpt').hidden=false;$('#hkGo').hidden=false;
   });
   $('#hkGo').onclick=async function(){
-    var job=hkJob;if(!job||!job.list.length)return;
+    var job=hkJob;if(!job||!job.list.length||job.busy)return;
+    job.busy=true;$('#hkGo').hidden=true;$('#hkOpt').hidden=true;
+    await snTake('before');
     var days=+$('#hkRange').value,cut=days?Date.now()-days*864e5:0,
         pick=job.list.filter(function(w){return w.fin>=cut}).sort(function(a,b){return a.fin-b.fin}),
         byName={},fresh=[],dup=0,bad=0,i;
     if(job.zip)job.zip.forEach(function(z){if(/\.gpx$/i.test(z.name))byName[z.name.split('/').pop()]=z});
-    var stepsBy=null,upd=0;
+    var stepsBy=null,upd=0,stepped=[];
+    function undoImport(){walks=walks.filter(function(x){return fresh.indexOf(x)<0});stepped.forEach(function(o){delete o.steps})}
     try{stepsBy=await hkScanSteps(await job.open(),job.total,job,pick.map(function(w,k){return {k:k,st:w.st>0?w.st:w.fin-(w.secs||0)*1e3,fin:w.fin}}))}catch(x){if(job.cancel)return}
     for(i=0;i<pick.length;i++){
-      if(job.cancel)return;
+      if(job.cancel){undoImport();return}
       hkShow('Importing '+(i+1)+' of '+pick.length+'…',(i+1)/pick.length);
       var w=pick[i],rec=null,ze=w.route&&byName[w.route];
       if(ze){try{var g=parseGPX(await zipText(job.file,ze),w.fin);
@@ -1576,11 +1697,11 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
       if(!rec||!(rec.km>=0.05)){bad++;continue}
       if(stepsBy&&stepsBy[i]>0)rec.steps=stepsBy[i];
       var old=walks.filter(function(x){return x.id===rec.id||(Math.abs(x.fin-rec.fin)<=18e4&&Math.abs(x.km-rec.km)<=Math.max(.3,rec.km*.1))})[0];
-      if(old){dup++;if(rec.steps&&!old.steps){old.steps=rec.steps;upd++}continue}
+      if(old){dup++;if(rec.steps&&!old.steps){old.steps=rec.steps;stepped.push(old);upd++}continue}
       walks.push(rec);fresh.push(rec);
     }
-    if(job.cancel)return;
-    if((fresh.length||upd)&&!saveW()){walks=walks.filter(function(x){return fresh.indexOf(x)<0});hkFail('Storage is full. Pick a shorter range, or remove old walks.');return}
+    if(job.cancel){undoImport();return}
+    if((fresh.length||upd)&&!saveW()){undoImport();job.busy=false;hkFail('Storage is full. Pick a shorter range, or remove old walks.');return}
     if(fresh.length){var nw=fresh.reduce(function(p,q){return q.fin>p.fin?q:p});sel=nw.id;shown=false}
     hkJob=null;$('#hk').classList.remove('on');renderWalks();bkInfo();
     toast(fresh.length?fresh.length+(fresh.length>1?' walks':' walk')+' imported from Apple Health'+(dup?', '+dup+' already there':''):upd?'Added Apple Health steps to '+upd+(upd>1?' walks':' walk'):'Nothing new to import ('+dup+' already there'+(bad?', '+bad+' skipped':'')+')');
@@ -1590,7 +1711,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   function bkInfo(){
     var n=0;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('cw:')===0)n+=k.length+(localStorage.getItem(k)||'').length}}catch(e){}
     var np=walks.reduce(function(a,w){return a+(w.photos?w.photos.length:0)},0);
-    $('#bkInfo').textContent=(st.lastBackup?'Last backup '+new Date(st.lastBackup).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}):'No backup yet')+' · walks use about '+Math.min(100,Math.round(n/5e4))+'% of browser storage'+(idbOK?' · '+np+(np===1?' photo':' photos')+' stored separately':'')}
+    $('#bkInfo').textContent=(st.lastBackup?'Last backup '+new Date(st.lastBackup).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})+(st.bkSize?' ('+st.bkSize+')':''):'No backup yet')+' · walks use about '+Math.min(100,Math.round(n/5e4))+'% of browser storage'+(idbOK?' · '+np+(np===1?' photo':' photos')+' stored separately':'')}
   /* backup reminder: shown on Home when there is no backup, or changes have piled up since an old one */
   var BK_DAYS=14,BK_SNOOZE=7*864e5;
   function bkDue(){
@@ -1606,32 +1727,342 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   $('#bkBanner').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     if(b.dataset.b==='now')doBackup();
     else if(b.dataset.b==='later'){st.bkSnooze=Date.now()+BK_SNOOZE;save();bkBanner()}});
-  function doBackup(){
+  function bkSize(n){return n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB'}
+  function bkStamp(){var d=new Date(),p=function(n){return (n<10?'0':'')+n};return loc(d).slice(0,10)+'-'+p(d.getHours())+p(d.getMinutes())}
+  function bkMark(msg,size){st.lastBackup=Date.now();st.bkSnooze=0;st.bkSize=size;save();bkInfo();bkBanner();toast(msg)}
+  /* export: share sheet on phones (save to Files, iCloud Drive, AirDrop), plain download everywhere else */
+  async function doBackup(){
     if(!walks.length){toast('Nothing to back up yet');return}
     if(!photosReady){toast('Photos are still loading, try again in a moment');return}
-    var data={app:'constellation-walks',v:1,at:Date.now(),profile:{name:st.name,avatar:st.avatar,stride:st.stride,theme:st.theme||'auto',unit:uN()},walks:walks},
-        a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));
-    a.download='constellation-walks-'+loc(new Date()).slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();
-    setTimeout(function(){URL.revokeObjectURL(a.href)},4000);st.lastBackup=Date.now();st.bkSnooze=0;save();bkInfo();bkBanner();toast('Backup saved')}
+    var data={app:'constellation-walks',v:2,at:Date.now(),count:walks.length,deleted:tombs.slice(),profile:{name:st.name,avatar:st.avatar,stride:st.stride,theme:st.theme||'auto',unit:uN()},walks:walks},
+        name='constellation-walks-'+bkStamp()+'.json',blob=new Blob([JSON.stringify(data)],{type:'application/json'}),size=bkSize(blob.size),file=null;
+    try{file=new File([blob],name,{type:'application/json'})}catch(e){}
+    if(file&&navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file],title:'Constellation Walks backup'});bkMark('Backup shared ('+size+')',size);return}
+      catch(x){if(x&&x.name==='AbortError')return}   /* cancelled: no backup recorded. Any other error falls back to a download */
+    }
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},4000);bkMark('Backup saved ('+size+')',size)}
   $('#bkExp').onclick=doBackup;
   $('#bkImp').onclick=function(){$('#bkFile').click()};
-  $('#bkFile').addEventListener('change',async function(e){
-    var f=e.target.files[0],d;e.target.value='';if(!f)return;
-    try{d=JSON.parse(await f.text())}catch(x){toast('That file isn’t a valid backup');return}
-    if(!d||d.app!=='constellation-walks'||!Array.isArray(d.walks)){toast('That file isn’t a Constellation Walks backup');return}
-    var have={},fresh=[];walks.forEach(function(x){have[x.id]=1});
-    d.walks.forEach(function(x){var w=clean(x);if(w&&!have[w.id]){have[w.id]=1;fresh.push(w)}});
-    if(!fresh.length){toast('Everything in that backup is already here');return}
-    walks=walks.concat(fresh);
-    if(!saveW()){walks=walks.filter(function(x){return fresh.indexOf(x)<0});toast('Storage is full. Free some space, then restore again');return}
-    if(idbOK)Promise.all(fresh.filter(function(x){return x.photos.length}).map(putPhotos)).catch(function(){toast('Walks restored, but some photos couldn’t be saved')});
-    var p=d.profile;   /* profile is restored only on a fresh install */
+  /* restore: the person picks Add missing walks (merge) or Replace everything (with a short Undo) */
+  var bkPend=null;
+  function bkRClose(){$('#bkR').classList.remove('on');trapEl=null;bkPend=null;restoreFocus()}
+  function bkROpen(msg,canAdd,snapMode){
+    rememberFocus();trapEl=$('#bkR .panel');$('#bkRMsg').textContent=msg;$('#bkRAdd').disabled=!canAdd;$('#bkRAdd').hidden=!!snapMode;$('#bkR').classList.add('on');
+    setTimeout(function(){var c=$('#bkRCancel');if(c)c.focus({preventScroll:true})},50)}
+  $('#bkRCancel').onclick=bkRClose;
+  $('#bkR').addEventListener('click',function(e){if(e.target.id==='bkR')bkRClose()});
+  function bkProfile(p){   /* profile is restored only on a fresh install */
     if(p&&!st.name.trim()&&typeof p.name==='string'){st.name=p.name.slice(0,24);
       if(p.avatar&&typeof p.avatar.v==='string'&&(p.avatar.t==='emoji'||(p.avatar.t==='img'&&p.avatar.v.indexOf('data:image/')===0)))st.avatar={t:p.avatar.t,v:p.avatar.v};
       if(isN(p.stride)&&p.stride>=30&&p.stride<=150)st.stride=p.stride;
       if(p.unit==='mi'||p.unit==='km')st.unit=p.unit;
-      save();$('#nameIn').value=st.name;$('#strideIn').value=st.stride;unitUI();paint()}
-    sel=null;shown=false;renderWalks();bkInfo();toast(fresh.length+(fresh.length>1?' walks':' walk')+' restored')});
+      save();$('#nameIn').value=st.name;$('#strideIn').value=st.stride;unitUI();paint()}}
+  $('#bkFile').addEventListener('change',async function(e){
+    var f=e.target.files[0],d;e.target.value='';if(!f)return;
+    try{d=JSON.parse(await f.text())}catch(x){toast('That file isn’t a valid backup');return}
+    if(!d||d.app!=='constellation-walks'||!Array.isArray(d.walks)){toast('That file isn’t a Constellation Walks backup');return}
+    if(isN(d.v)&&d.v>2){toast('This backup is from a newer version of the app. Update the app first');return}
+    if(!photosReady){toast('Photos are still loading, try again in a moment');return}
+    var seen={},list=[],bad=0,have={};
+    d.walks.forEach(function(x){var w=clean(x);if(!w){bad++;return}if(!seen[w.id]){seen[w.id]=1;list.push(w)}});
+    if(!list.length){toast('No readable walks in that file');return}
+    walks.forEach(function(x){have[x.id]=1});
+    var add=list.filter(function(w){return !have[w.id]}).length,
+        when=isN(d.at)?' from '+new Date(d.at).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}):'';
+    bkPend={list:list,prof:d.profile};
+    bkROpen('This backup'+when+' has '+list.length+(list.length===1?' walk':' walks')+' and this device has '+walks.length+'. '+(add?add+(add===1?' walk is':' walks are')+' not here yet.':'Every walk in it is already here.')+(bad?' '+bad+' couldn’t be read.':'')+' Add missing walks keeps everything you have. Replace everything makes this device match the backup; you can undo it for a few seconds.',add>0)});
+  $('#bkRAdd').onclick=async function(){
+    var p=bkPend;if(!p)return;bkRClose();
+    await snTake('before');
+    var have={},fresh=[];walks.forEach(function(x){have[x.id]=1});
+    p.list.forEach(function(w){if(!have[w.id]){have[w.id]=1;fresh.push(w)}});
+    if(!fresh.length){toast('Everything in that backup is already here');return}
+    walks=walks.concat(fresh);
+    if(!saveW()){walks=walks.filter(function(x){return fresh.indexOf(x)<0});toast('Storage is full. Free some space, then restore again');return}
+    if(idbOK)Promise.all(fresh.filter(function(x){return x.photos.length}).map(putPhotos)).catch(function(){toast('Walks restored, but some photos couldn’t be saved')});
+    bkProfile(p.prof);
+    sel=null;shown=false;renderWalks();bkInfo();toast(fresh.length+(fresh.length>1?' walks':' walk')+' restored')};
+  $('#bkRRep').onclick=async function(){
+    var p=bkPend;if(!p)return;bkRClose();
+    await snTake('before');
+    var prev=walks,keep={};p.list.forEach(function(w){keep[w.id]=1});
+    walks=p.list.slice();
+    if(!saveW()){walks=prev;toast('Storage is full. Nothing was changed');return}
+    if(idbOK){Promise.all(walks.map(putPhotos)).catch(function(){toast('Restored, but some photos couldn’t be saved')});prev.forEach(function(x){if(!keep[x.id])delPhotos(x.id)})}
+    bkProfile(p.prof);
+    sel=null;shown=false;renderWalks();bkInfo();
+    toast('Replaced with '+walks.length+(walks.length===1?' walk':' walks'),{label:'Undo',fn:function(){
+      var cur=walks;walks=prev;
+      if(!saveW()){walks=cur;toast('Storage is full, couldn’t undo');return}
+      if(idbOK){Promise.all(walks.map(putPhotos)).catch(function(){toast('Undone, but some photos couldn’t be saved')});cur.forEach(function(x){if(!seenIn(prev,x.id))delPhotos(x.id)})}
+      sel=null;shown=false;renderWalks();bkInfo();toast('Restore undone')}})};
+  /* local snapshots: rolling copies in their own IndexedDB (cw-snaps). 3 automatic (at most one a day, only if walks changed) and 2 taken before a restore or import */
+  var snDB=null,snOK=false,SN_KEEP={auto:3,before:2};
+  function snOpen(){
+    if(!window.indexedDB){snInfo();return}
+    var r;try{r=indexedDB.open('cw-snaps',1)}catch(e){snInfo();return}
+    r.onupgradeneeded=function(){if(!r.result.objectStoreNames.contains('s'))r.result.createObjectStore('s',{keyPath:'id'})};
+    r.onsuccess=function(){snDB=r.result;snOK=true;snInfo();snAuto()};
+    r.onerror=r.onblocked=function(){snInfo()}}
+  function snTx(mode,fn){return new Promise(function(res,rej){
+    var t=snDB.transaction('s',mode),q=fn(t.objectStore('s'));
+    t.oncomplete=function(){res(q&&q.result)};t.onerror=t.onabort=function(){rej(t.error||new Error('snap'))}})}
+  function snList(){return snOK?snTx('readonly',function(s){return s.getAll()}).then(function(a){return (a||[]).sort(function(x,y){return y.at-x.at})}).catch(function(){return []}):Promise.resolve([])}
+  async function snPrune(){
+    var all=await snList(),n={},del=[];
+    all.forEach(function(r){n[r.kind]=(n[r.kind]||0)+1;if(n[r.kind]>(SN_KEEP[r.kind]||2))del.push(r.id)});
+    for(var i=0;i<del.length;i++){var id=del[i];await snTx('readwrite',function(s){return s.delete(id)})}}
+  async function snTake(kind){
+    if(!snOK||!photosReady||!walks.length)return false;
+    try{
+      var at=Date.now(),json=JSON.stringify({app:'constellation-walks',v:2,at:at,walks:walks}),
+          rec={id:at+'-'+kind,at:at,kind:kind,count:walks.length,size:json.length,json:json};
+      await snTx('readwrite',function(s){return s.put(rec)});
+      await snPrune();st.lastSnap=at;save();snInfo();return true
+    }catch(e){return false}}
+  function snAuto(){
+    if(!snOK||!photosReady||!walks.length)return;
+    if(st.lastSnap&&(Date.now()-st.lastSnap<864e5||(st.chg||0)<=st.lastSnap))return;
+    if(snAutoBusy)return;snAutoBusy=true;
+    snTake('auto').then(function(){snAutoBusy=false})}
+  var snAutoBusy=false;
+  function snWhen(t){return new Date(t).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+  async function snInfo(){
+    var el=$('#snInfo'),b=$('#snBtn');if(!el)return;
+    if(!snOK){el.textContent=window.indexedDB?'':'Snapshots aren’t available in this browser.';if(b)b.disabled=!snOK;return}
+    var all=await snList();if(b)b.disabled=false;
+    el.textContent=all.length?all.length+(all.length===1?' snapshot':' snapshots')+' kept on this device, latest '+snWhen(all[0].at)+'.':'No snapshots yet. One is taken automatically after your walks change.'}
+  async function snShow(){
+    var all=await snList(),L=$('#snList');L.textContent='';
+    if(!all.length){var p=document.createElement('p');p.className='hint';p.textContent='No snapshots yet.';L.appendChild(p)}
+    all.forEach(function(r){
+      var row=document.createElement('div');row.className='snrow';
+      var sp=document.createElement('span');sp.textContent=snWhen(r.at)+' · '+r.count+(r.count===1?' walk':' walks');
+      var sm=document.createElement('small');sm.textContent=(r.kind==='before'?'Taken before a restore or import':'Automatic')+' · '+bkSize(r.size||0);sp.appendChild(sm);
+      var bt=document.createElement('button');bt.type='button';bt.className='btn';bt.textContent='Restore';bt.setAttribute('data-id',r.id);
+      row.appendChild(sp);row.appendChild(bt);L.appendChild(row)});
+    rememberFocus();trapEl=$('#snS .panel');$('#snS').classList.add('on');
+    setTimeout(function(){var c=$('#snClose');if(c)c.focus({preventScroll:true})},50)}
+  function snClose(){$('#snS').classList.remove('on');trapEl=null;restoreFocus()}
+  $('#snBtn').onclick=snShow;
+  $('#snClose').onclick=snClose;
+  $('#snS').addEventListener('click',function(e){if(e.target.id==='snS')snClose()});
+  $('#snList').addEventListener('click',async function(e){
+    var b=e.target.closest('button');if(!b)return;
+    var all=await snList(),r=all.filter(function(x){return x.id===b.getAttribute('data-id')})[0],d;
+    if(!r){toast('That snapshot is gone');return}
+    try{d=JSON.parse(r.json)}catch(x){toast('That snapshot couldn’t be read');return}
+    var list=[],seen={};(d.walks||[]).forEach(function(x){var w=clean(x);if(w&&!seen[w.id]){seen[w.id]=1;list.push(w)}});
+    if(!list.length){toast('That snapshot has no readable walks');return}
+    snClose();
+    bkPend={list:list,prof:null};
+    bkROpen('Snapshot from '+snWhen(r.at)+' has '+list.length+(list.length===1?' walk':' walks')+' and this device has '+walks.length+'. Replace everything makes this device match the snapshot. Your current walks are saved as a snapshot first, and you can also undo it for a few seconds.',false,true)});
+  /* manage walks: select several and delete them together, with a safety snapshot first and an Undo */
+  var mgSel={},mgArm=0;
+  function mgSync(){
+    var n=Object.keys(mgSel).length,d=$('#mgDel');clearTimeout(mgArm);
+    document.querySelectorAll('#mgList input').forEach(function(c){c.checked=!!mgSel[c.value]});
+    $('#mgInfo').textContent=n?n+' of '+walks.length+' selected.':'Tap walks to select them.';
+    d.disabled=!n;d.classList.remove('arm');d.textContent='Delete selected'}
+  function mgOpen(){
+    if(!walks.length){toast('No walks to manage yet');return}
+    mgSel={};var all=walks.slice().sort(function(a,b){return b.fin-a.fin}),L=$('#mgList'),C=$('#mgChips');
+    L.innerHTML=all.map(function(w){var d=new Date(w.fin),np=w.photos?w.photos.length:0,
+      tg=[d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})];if(w.manual)tg.push('by hand');if(w.hk)tg.push('Apple Health');if(np)tg.push(np+(np>1?' photos':' photo'));
+      return '<label class="mgrow"><input type="checkbox" value="'+w.id+'"><span>'+d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric',year:'numeric'})+'<small>'+tg.join(' · ')+'</small></span><b>'+fdu(w.km,2)+'</b></label>'}).join('');
+    var ch=[['all','Select all'],['clr','Clear']];
+    if(walks.some(function(w){return w.hk}))ch.splice(1,0,['hk','Apple Health']);
+    if(walks.some(function(w){return w.manual}))ch.splice(ch.length-1,0,['man','By hand']);
+    C.textContent='';ch.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=c[1];b.dataset.g=c[0];C.appendChild(b)});
+    rememberFocus();trapEl=$('#mgS .panel');L.scrollTop=0;mgSync();$('#mgS').classList.add('on');
+    setTimeout(function(){var c=$('#mgClose');if(c)c.focus({preventScroll:true})},50)}
+  function mgClose(){$('#mgS').classList.remove('on');trapEl=null;mgSel={};restoreFocus()}
+  $('#mgBtn').onclick=mgOpen;$('#mgClose').onclick=mgClose;
+  $('#mgS').addEventListener('click',function(e){if(e.target.id==='mgS')mgClose()});
+  $('#mgList').addEventListener('change',function(e){var c=e.target;if(!c||c.type!=='checkbox')return;if(c.checked)mgSel[c.value]=1;else delete mgSel[c.value];mgSync()});
+  $('#mgChips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var g=b.dataset.g;mgSel={};
+    if(g!=='clr')walks.forEach(function(w){if(g==='all'||(g==='hk'&&w.hk)||(g==='man'&&w.manual))mgSel[w.id]=1});mgSync()});
+  $('#mgDel').onclick=async function(){
+    var d=this,n=Object.keys(mgSel).length;if(!n)return;
+    if(!d.classList.contains('arm')){d.classList.add('arm');d.textContent='Tap again to delete '+n;mgArm=setTimeout(function(){d.classList.remove('arm');d.textContent='Delete selected'},3000);return}
+    clearTimeout(mgArm);d.disabled=true;
+    await snTake('before');
+    var prev=walks,gone=walks.filter(function(w){return mgSel[w.id]});
+    if(!gone.length){mgSync();return}
+    walks=walks.filter(function(w){return !mgSel[w.id]});
+    if(!saveW()){walks=prev;toast('Couldn’t delete. Storage isn’t responding');mgSync();return}
+    gone.forEach(function(w){delPhotos(w.id)});
+    mgClose();sel=null;shown=false;renderWalks();bkInfo();
+    toast(gone.length+(gone.length>1?' walks':' walk')+' deleted',{label:'Undo',fn:function(){
+      var have={};walks.forEach(function(x){have[x.id]=1});var back=gone.filter(function(x){return !have[x.id]});
+      walks=walks.concat(back);
+      if(!saveW()){walks=walks.filter(function(x){return back.indexOf(x)<0});toast('Storage is full, couldn’t restore them');return}
+      if(idbOK)Promise.all(back.filter(function(x){return x.photos&&x.photos.length}).map(putPhotos)).catch(function(){toast('Walks restored, but some photos couldn’t be')});
+      sel=null;shown=false;renderWalks();bkInfo();toast('Walks restored')}})};
+  function seenIn(list,id){for(var i=0;i<list.length;i++)if(list[i].id===id)return true;return false}
+
+  /* Google Drive backup (stage 4): one-way upload of this device to the app's hidden Drive folder (drive.appdata).
+     Files: walks.json (walks without photos, deleted list), profile.json, photos-<walkId>.json (one per walk, uploaded only when it changes). */
+  var GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+  function gisOK(){return !!(window.google&&google.accounts&&google.accounts.oauth2)}
+  function gdPreload(){
+    if(!GD_CLIENT_ID||gisOK()||gd.loading||navigator.onLine===false)return;
+    gd.loading=true;var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;
+    sc.onload=function(){gd.loading=false;gdUI();gdKick()};
+    sc.onerror=function(){gd.loading=false;sc.remove()};
+    document.head.appendChild(sc)}
+  function gdHash(t){var h1=0xdeadbeef,h2=0x41c6ce57,i,c;
+    for(i=0;i<t.length;i++){c=t.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}
+    h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+    return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)+'.'+t.length.toString(36)}
+  function gdDev(){try{var a=new Uint8Array(6);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(b){return (b<16?'0':'')+b.toString(16)}).join('')}catch(e){return Math.random().toString(16).slice(2,14)}}
+  /* access token: requested straight from the tap (iOS blocks the sign-in popup otherwise); a silent attempt is made without a tap */
+  function gdToken(interactive){return new Promise(function(res,rej){
+    if(gd.tok&&Date.now()<gd.exp-60000){res(gd.tok);return}
+    if(!interactive&&gd.noSilent){rej({code:'signin'});return}
+    if(!gisOK()){rej({code:'gis'});return}
+    var done=false,t=setTimeout(function(){fin(null,{code:'signin'})},interactive?120000:15000);
+    function fin(tok,err){if(done)return;done=true;clearTimeout(t);if(tok)res(tok);else{if(!interactive)gd.noSilent=true;rej(err||{code:'signin'})}}
+    try{
+      var c=google.accounts.oauth2.initTokenClient({client_id:GD_CLIENT_ID,scope:GD_SCOPE,
+        callback:function(r){if(r&&r.access_token){gd.tok=r.access_token;gd.exp=Date.now()+(+r.expires_in||3600)*1000;gd.noSilent=false;fin(r.access_token)}
+          else fin(null,{code:r&&r.error==='access_denied'?'denied':'signin'})},
+        error_callback:function(e){fin(null,{code:e&&e.type==='popup_closed'?'closed':'signin'})}});
+      c.requestAccessToken({prompt:interactive?'':'none'})
+    }catch(e){fin(null,{code:'gis'})}})}
+  async function gdApi(url,opt){
+    opt=opt||{};opt.headers=Object.assign({Authorization:'Bearer '+gd.tok},opt.headers||{});
+    var r=await fetch(url,opt);
+    if(r.status===401){gd.tok=null;gd.exp=0;throw {code:'auth'}}
+    if(!r.ok){var j=null;try{j=await r.json()}catch(x){}
+      var er=j&&j.error,rs=er&&er.errors&&er.errors[0]&&er.errors[0].reason;
+      throw {code:rs==='storageQuotaExceeded'?'quota':'http',status:r.status,msg:er&&er.message||''}}
+    if(r.status===204)return null;
+    try{return await r.json()}catch(x){return null}}
+  async function gdList(){
+    var map={},pt='',j;
+    do{j=await gdApi('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&pageSize=1000&fields='+encodeURIComponent('nextPageToken,files(id,name,appProperties)')+(pt?'&pageToken='+encodeURIComponent(pt):''));
+      ((j&&j.files)||[]).forEach(function(f){if(!map[f.name])map[f.name]={id:f.id,p:f.appProperties||{}}});pt=(j&&j.nextPageToken)||''}while(pt);
+    return map}
+  async function gdPut(files,name,content,props){
+    var ex=files[name],b='cw'+Math.random().toString(36).slice(2),
+        meta=ex?{appProperties:props}:{name:name,parents:['appDataFolder'],appProperties:props},
+        body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+b+'--',
+        j=await gdApi('https://www.googleapis.com/upload/drive/v3/files'+(ex?'/'+ex.id:'')+'?uploadType=multipart&fields=id',{method:ex?'PATCH':'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:body});
+    files[name]={id:(j&&j.id)||(ex&&ex.id),p:props}}
+  async function gdDel(id){try{await gdApi('https://www.googleapis.com/drive/v3/files/'+id,{method:'DELETE'})}catch(e){if(!(e&&e.status===404))throw e}}
+  function gdAsk(title,msg,ok){return new Promise(function(res){
+    rememberFocus();trapEl=$('#gdC .panel');$('#gdCT').textContent=title;$('#gdCM').textContent=msg;$('#gdCOk').textContent=ok;$('#gdC').classList.add('on');
+    function fin(v){$('#gdC').classList.remove('on');trapEl=null;restoreFocus();$('#gdCOk').onclick=null;$('#gdCNo').onclick=null;res(v)}
+    $('#gdCOk').onclick=function(){fin(true)};$('#gdCNo').onclick=function(){fin(false)};
+    setTimeout(function(){var c=$('#gdCNo');if(c)c.focus({preventScroll:true})},50)})}
+  function gdProfile(){return {name:st.name,avatar:st.avatar,stride:st.stride,theme:st.theme||'auto',unit:uN()}}
+  function gdStrip(k,v){return k==='photos'?undefined:v}
+  async function gdSync(interactive){
+    var g=st.gd;if(!g||!g.on||!GD_CLIENT_ID)return;
+    if(gd.busy){gd.again=true;return}
+    if(!photosReady)return;
+    if(!walks.length){gd.state='empty';gd.err='';gdUI();return}
+    gd.busy=true;gd.err='';gd.state='';gd.note='';gd.prog='Connecting to Google…';gdUI();
+    var tp=gdToken(interactive),first=!g.last;   /* the token request happens before any await, so the tap still counts */
+    try{
+      await tp;
+      var files=await gdList(),W=walks.slice(),rw=files['walks.json'],i;
+      if(rw&&rw.p.dev&&rw.p.dev!==g.dev&&!g.ack){
+        if(!interactive){gd.state='hold';return}
+        var when=rw.p.at?' saved '+snWhen(+rw.p.at):'',ok=await gdAsk('Replace the cloud copy?','Google Drive already holds a backup from another browser or device ('+(rw.p.n||'?')+' walks'+when+'). Uploading from here replaces it with the '+W.length+(W.length===1?' walk':' walks')+' on this device. Merging both copies is planned for a later update.','Replace cloud copy');
+        if(!ok){gd.state='hold';return}
+        g.ack=true;save()}
+      if(!g.snapped){await snTake('before');g.snapped=true;save()}   /* local safety copy before the first upload */
+      var upPh=0;
+      if(g.photos){
+        var want={},work=[];
+        W.forEach(function(w){if(w.photos&&w.photos.length){var nm='photos-'+w.id+'.json',sg=gdHash(w.photos.join('|'))+'.'+w.photos.length;want[nm]=1;
+          if(!files[nm]||files[nm].p.s!==sg)work.push({w:w,nm:nm,sg:sg})}});
+        for(i=0;i<work.length;i++){
+          gd.prog='Uploading photos '+(i+1)+' of '+work.length+'…';gdUI();
+          await gdPut(files,work[i].nm,JSON.stringify({app:'constellation-walks',v:2,id:work[i].w.id,photos:work[i].w.photos}),{s:work[i].sg});upPh++}
+        var orph=Object.keys(files).filter(function(n){return /^photos-.+\.json$/.test(n)&&!want[n]});
+        for(i=0;i<orph.length;i++)await gdDel(files[orph[i]].id)}
+      gd.prog='Saving walks…';gdUI();
+      var pj=JSON.stringify({app:'constellation-walks',v:2,profile:gdProfile()}),ps=gdHash(pj);
+      if(!files['profile.json']||files['profile.json'].p.s!==ps)await gdPut(files,'profile.json',pj,{s:ps});
+      var obj={app:'constellation-walks',v:2,dev:g.dev,count:W.length,deleted:tombs.slice(),walks:W},ws=gdHash(JSON.stringify(obj,gdStrip)),cur=files['walks.json'];
+      if(!cur||cur.p.s!==ws||cur.p.dev!==g.dev){
+        obj.at=Date.now();
+        await gdPut(files,'walks.json',JSON.stringify(obj,gdStrip),{s:ws,dev:g.dev,n:String(W.length),at:String(obj.at)})}
+      g.last=Date.now();g.n=W.length;g.ack=true;save();
+      if(interactive||first)toast('Backed up to Google Drive')
+    }catch(e){
+      var c=e&&e.code;
+      if(c==='signin'||c==='auth'||c==='closed'){gd.state='signin'}
+      else if(c==='denied'){gd.state='signin';gd.err='Google sign-in was cancelled.'}
+      else if(c==='gis'){gd.err=navigator.onLine===false?'You’re offline. It will back up when you’re back online.':'Couldn’t load Google sign-in. Check your connection and try again.'}
+      else if(c==='quota'){gd.err='Your Google Drive is full, so the backup couldn’t be saved.'}
+      else if(e instanceof TypeError){gd.err='No connection to Google. It will try again later.'}
+      else gd.err='Google Drive said: '+((e&&e.msg)||(e&&e.status)||'something went wrong')+'.';
+      if(interactive&&first&&(c==='denied'||c==='closed'||c==='signin')){st.gd=null;save();if(!gd.err)gd.err='Google sign-in didn’t finish, so nothing was connected.'}
+    }finally{
+      gd.busy=false;gd.prog='';gdUI();
+      if(gd.again){gd.again=false;gdQueue()}}}
+  function gdQueue(){if(!st.gd||!st.gd.on||!GD_CLIENT_ID)return;clearTimeout(gd.timer);gd.timer=setTimeout(gdKick,20000)}
+  function gdKick(){
+    var g=st.gd;if(!g||!g.on||!GD_CLIENT_ID||!photosReady||gd.busy||navigator.onLine===false)return;
+    if(!gisOK()){gdPreload();return}
+    if(g.last&&(st.chg||0)<=g.last)return;
+    if(gd.state==='hold')return;
+    gdSync(false)}
+  function gdUI(){
+    var box=$('#gdBox');if(!box)return;
+    var g=st.gd,on=!!(g&&g.on),has=!!GD_CLIENT_ID;
+    box.hidden=!has;$('#gdIntro').hidden=on||!has;$('#gdSetup').hidden=true;$('#gdConnRow').hidden=on||!has;$('#gdOn').hidden=!on;
+    var t='';
+    if(gd.prog)t=gd.prog;
+    else if(on){
+      var lastTxt=g.last?'Last backup '+snWhen(g.last)+' · '+g.n+(g.n===1?' walk':' walks')+'.':'';
+      if(gd.err)t=gd.err+(lastTxt?' '+lastTxt:'');
+      else if(gd.state==='signin')t='Signed out of Google. Tap Back up now to sign in again.'+(lastTxt?' '+lastTxt:'');
+      else if(gd.state==='hold')t='Google Drive already holds a backup from another browser or device. Tap Back up now to review it.';
+      else if(gd.state==='empty')t='Add a walk first. Nothing is uploaded while this device has no walks.';
+      else if(gd.note)t=gd.note;
+      else t=g.last?'Connected. '+lastTxt+(gisOK()?'':' Sign-in loads when you are online.'):'Connected. Not backed up yet.'}
+    else if(gd.err)t=gd.err;
+    $('#gdStat').textContent=t;$('#gdStat').hidden=!t;
+    $('#gdNow').disabled=gd.busy;$('#gdOff').disabled=gd.busy;$('#gdDel').disabled=gd.busy;
+    $('#gdPh').checked=!!(g&&g.photos);
+    var f=$('#sFoot');if(f)f.textContent=on?'Constellation Walks · a copy is kept in your Google Drive':'Constellation Walks · everything stays on this device'}
+  $('#gdConn').onclick=function(){
+    if(!GD_CLIENT_ID)return;
+    if(!gisOK()){gdPreload();toast(navigator.onLine===false?'You’re offline':'Loading Google sign-in… tap again in a moment');return}
+    st.gd={on:true,photos:true,dev:gdDev(),ack:false,snapped:false};save();gd.noSilent=false;gd.state='';gd.err='';gdSync(true)};
+  $('#gdNow').onclick=function(){
+    if(!gisOK()){gdPreload();toast('Loading Google sign-in… tap again in a moment');return}
+    gd.state='';gd.noSilent=false;gdSync(true)};
+  $('#gdOff').onclick=function(){
+    var tk=gd.tok;gd.tok=null;gd.exp=0;clearTimeout(gd.timer);
+    try{if(tk&&gisOK())google.accounts.oauth2.revoke(tk,function(){})}catch(e){}
+    st.gd=null;save();gd.state='';gd.err='';gd.note='';gdUI();toast('Disconnected. The copy already in Google Drive is kept.')};
+  $('#gdPh').onchange=function(){var g=st.gd;if(!g)return;g.photos=this.checked;save();if(g.photos){gd.noSilent=false;gdSync(false)}};
+  $('#gdDel').onclick=async function(){
+    var g=st.gd;if(!g||gd.busy)return;
+    if(!gisOK()){gdPreload();toast('Loading Google sign-in… tap again in a moment');return}
+    gd.busy=true;gdUI();var tp=gdToken(true);
+    try{
+      await tp;var files=await gdList(),names=Object.keys(files);
+      if(!names.length){toast('Nothing to delete in Google Drive');return}
+      var ok=await gdAsk('Delete the cloud copy?','This removes the '+names.length+' backup '+(names.length===1?'file':'files')+' this app keeps in your Google Drive. Walks on this device are not touched.','Delete cloud copy');
+      if(!ok)return;
+      for(var i=0;i<names.length;i++)await gdDel(files[names[i]].id);
+      g.last=Date.now();g.n=0;g.ack=true;save();
+      gd.note='Cloud copy deleted. It uploads again after your next change, or tap Back up now.';toast('Cloud copy deleted')
+    }catch(e){gd.err=e&&e.code==='auth'||e&&e.code==='signin'||e&&e.code==='closed'||e&&e.code==='denied'?'Sign-in is needed to do that.':'Couldn’t delete the cloud copy.'}
+    finally{gd.busy=false;gdUI()}};
+  window.addEventListener('online',gdKick);
+  gdUI();if(st.gd&&st.gd.on)gdPreload();
 
   /* tabs with sliding indicator */
   var tabs=document.querySelectorAll('.tab'),views=document.querySelectorAll('.view');
@@ -1659,7 +2090,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     if(prevTab>=0&&prevTab!==i&&!reduced()){   /* the capsule stretches along its path, then settles */
       var ind=$('#ind'),d=Math.abs(i-prevTab);ind.style.scale=(1+.05*d)+' '+(1-.04*d);
       clearTimeout(go.t);go.t=setTimeout(function(){ind.style.scale=''},170)}
-    if(i===3){bkInfo();askPersist()}
+    if(i===3){bkInfo();askPersist();gdPreload();gdUI()}
   }
   tabs.forEach(function(t,k){t.onclick=function(){go(k)}});
   /* arrow keys move between tabs when a tab has focus */
@@ -1713,7 +2144,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
   var cv=$('#sky'),cx=cv.getContext('2d'),W,H,D=Math.min(window.devicePixelRatio||1,2);
   function size(){W=lw=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);dots()}
   addEventListener('resize',function(){if(innerWidth!==lw)size()});
-  document.addEventListener('visibilitychange',function(){if(!document.hidden){paint();renderProgress();bkBanner()}});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){paint();renderProgress();bkBanner();snAuto();gdKick()}});
   /* Offline use and home-screen install. sw.js and the manifest must sit next to this file on an https host (or localhost).
      Opened from a file or inside the artifact viewer there is no service worker, and the app just works online as before. */
   (function(){
@@ -1730,7 +2161,7 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     }).catch(function(){say('Offline use could not start in this browser. '+installNote)});
     window.addEventListener('offline',function(){toast('You’re offline. Everything still works.')});
   })();
-  applyTheme();paint();renderWalks();go(0);openPhotoDB();askPersist();
+  applyTheme();paint();renderWalks();go(0);openPhotoDB();snOpen();askPersist();
 })();
 </script>
 </body>

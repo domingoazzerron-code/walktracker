@@ -1,5 +1,5 @@
 /* Constellation Walks: offline support. Keep this file next to walk-tracker.html. */
-var CACHE='cw-v18';
+var CACHE='cw-v24';
 var FILES=['./','./walk-tracker.html','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){
