@@ -1,6 +1,6 @@
-/* Constellation Walks: offline support. Keep this file next to walk-tracker.html. */
-var CACHE='cw-v24';
-var FILES=['./','./walk-tracker.html','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+/* Constellation Walks: offline support. Keep this file next to index.html. */
+var CACHE='cw-v25';
+var FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){
     return Promise.all(FILES.map(function(u){return c.add(u).catch(function(){})}));
@@ -16,7 +16,7 @@ self.addEventListener('fetch',function(e){
   if(r.mode==='navigate'){
     /* pages: network first so updates arrive, cached copy when offline */
     e.respondWith(fetch(r).then(function(res){if(res&&res.ok){var cp=res.clone();caches.open(CACHE).then(function(c){c.put(r,cp)})}return res}).catch(function(){
-      return caches.match(r).then(function(m){return m||caches.match('./walk-tracker.html')||caches.match('./index.html')||caches.match('./')})}));
+      return caches.match(r).then(function(m){return m||caches.match('./index.html')||caches.match('./')})}));
     return;
   }
   /* fonts, icons, manifest: cached copy first, refreshed in the background */

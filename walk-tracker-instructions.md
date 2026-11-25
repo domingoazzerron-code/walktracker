@@ -1,6 +1,6 @@
 # Constellation Walks: project instructions
 
-A single-file web app (`walk-tracker.html`) that turns every walk into a star. Walks are connected into a constellation, and each walk gets a glowing route and a photocard.
+A single-file web app (`index.html`) that turns every walk into a star. Walks are connected into a constellation, and each walk gets a glowing route and a photocard.
 
 ## The idea
 
@@ -80,7 +80,7 @@ Importing the same walk twice is ignored.
 
 ## Running it
 
-- Open `walk-tracker.html` in a browser, or host the file on any static host (for example GitHub Pages).
+- Open `index.html` in a browser, or host the file on any static host (for example GitHub Pages).
 - On iPhone, open it in Safari and use Share, then **Add to Home Screen** for an app-like launch.
 - The font loads from Google Fonts. Without internet the app still works with a system font.
 
@@ -182,7 +182,7 @@ Applies to every GPX import (and to the route files inside an Apple Health impor
 
 ## Offline use and install (added)
 
-- **Files:** `walk-tracker.html`, `sw.js`, `manifest.webmanifest` and the four icons must sit in the same folder on an **https** host (GitHub Pages works) or on localhost. Opened from a file, or inside the artifact viewer, there is no service worker; the app works online as before and Settings says so.
+- **Files:** `index.html`, `sw.js`, `manifest.webmanifest` and the four icons must sit in the same folder on an **https** host (GitHub Pages works) or on localhost. Opened from a file, or inside the artifact viewer, there is no service worker; the app works online as before and Settings says so.
 - **Head tags:** the page links the manifest, `apple-touch-icon.png` and `icon-192.png`, and has the iOS standalone tags (title "Walks").
 - **Service worker:** registered on load only where it can work. Pages are network first, so a new version arrives on the next online open and the cached copy is used offline. Fonts, icons and the manifest are cached first and refreshed in the background. The cache is named `cw-v5`; **bump this number in `sw.js` whenever the cached file list changes**.
 - **Feedback:** a one-time toast "Ready to use offline" the first time it is cached, and a toast "You're offline. Everything still works." when the connection drops.
@@ -222,7 +222,7 @@ Applies to every GPX import (and to the route files inside an Apple Health impor
 
 ## Roadmap
 
-Built one task at a time. Each finished task is published to the live artifact and delivered as a new zip. `manifest.webmanifest`, `sw.js` and the icons ship in the zip and must be hosted next to `walk-tracker.html` (see Offline use and install).
+Built one task at a time. Each finished task is published to the live artifact and delivered as a new zip. `manifest.webmanifest`, `sw.js` and the icons ship in the zip and must be hosted next to `index.html` (see Offline use and install).
 
 | # | Task | Status |
 |---|---|---|
@@ -244,7 +244,7 @@ Built one task at a time. Each finished task is published to the live artifact a
 
 - Live artifact: https://claude.ai/artifact/GKQAPPbDZgbkEHacSpEeXe
 - Last updated: 2026-11-25 (accessibility fixes).
-- Workflow: after every edit to `walk-tracker.html`, the live artifact is updated in the same step (same link) and this section is refreshed.
+- Workflow: after every edit to `index.html`, the live artifact is updated in the same step (same link) and this section is refreshed.
 - Earlier artifact links could no longer be opened (this happened again on 2026-11-25, and once more at the miles update), so this is a new link. In the artifact viewer, Export backup cannot download a file (the viewer blocks downloads); use the local file or a hosted copy for backups.
 - Note: data is stored per browser, so the live page and a local copy of the file keep separate walks. Use Export and Restore backup to move between them.
 
@@ -257,7 +257,6 @@ Built one task at a time. Each finished task is published to the live artifact a
 - Greeting, goal and streaks refresh when the app returns to the foreground.
 - Invalid stride or goal values are reset when the field loses focus.
 - Service worker caches only successful pages; cache is `cw-v5`.
-- `index.html` is a copy of `walk-tracker.html`; keep them identical.
 
 ## Update: notes on cards, no test walks, settings polish
 

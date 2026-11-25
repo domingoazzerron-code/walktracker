@@ -2,7 +2,7 @@
   "name": "Constellation Walks",
   "short_name": "Walks",
   "description": "Turn every walk into a star.",
-  "start_url": "./walk-tracker.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
