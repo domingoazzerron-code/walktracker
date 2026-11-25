@@ -22,13 +22,13 @@
   color-scheme:dark; box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+html{height:100%;overflow:hidden;overscroll-behavior:none;scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;height:100%;overflow:hidden;color:var(--ink);
+body{margin:0;height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;color:var(--ink);
   font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
   background:radial-gradient(120% 80% at 50% 0%,var(--bg1) 0%,var(--bg0) 62%) var(--bg0);}
 #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
-.app{position:relative;z-index:1;height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column}
+.app{position:relative;z-index:1;height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;overflow:clip}
 
 header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px}
 .avatar{width:52px;height:52px;border-radius:50%;border:0;padding:2px;cursor:pointer;
@@ -42,7 +42,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .greet b{display:block;font-size:27px;font-weight:500;letter-spacing:-.01em;max-width:62vw;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-main{flex:1;position:relative;min-height:0}
+/* The pages waiting off to the side for the slide animation must never count as page width. Otherwise Android Chrome
+   widens the layout viewport and everything fixed to the screen (the dock, the search button) lands off screen. */
+main{flex:1;position:relative;min-height:0;overflow:hidden;overflow:clip}
 .view{position:absolute;inset:0;overflow-y:auto;padding:14px 20px 130px;opacity:0;
   transform:translateY(16px) scale(.985);pointer-events:none;visibility:hidden;
   transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1),visibility 0s .55s}
@@ -371,22 +373,22 @@ main,.view{scroll-padding-bottom:110px}
 :root[data-theme="dark"]{--dock-bg:rgba(30,30,33,.72);--dock-sh:0 18px 38px -12px rgba(0,0,0,.7),0 3px 8px rgba(0,0,0,.4)}
 :root[data-theme="light"]{--dock-bg:rgba(255,255,255,.74);--dock-sh:0 18px 38px -14px rgba(20,20,40,.3),0 3px 8px rgba(20,20,40,.07)}
 .dock{position:fixed;left:0;right:0;margin:0 auto;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;
-  width:min(440px,calc(100% - 24px));height:64px;display:flex;align-items:center;gap:10px;isolation:isolate;--i:0;--g:var(--dock-g);
+  width:min(440px,calc(100% - 24px));height:var(--dh);display:flex;align-items:center;gap:10px;isolation:isolate;--i:0;--g:var(--dock-g);--dh:64px;--pp:6px;
   animation:dockin .8s var(--spring) .15s backwards}
 .dock::before{content:"";position:absolute;left:-12px;right:-12px;top:-26px;bottom:calc(-14px - env(safe-area-inset-bottom,0px));z-index:-1;pointer-events:none;
   background:linear-gradient(to bottom,transparent,var(--bg0) 40%)}
 @keyframes dockin{from{opacity:0;transform:translateY(30px) scale(.96)}}
 .dock nav{flex:1;min-width:0}
-.pill{position:relative;display:flex;height:64px;padding:6px;border-radius:32px;background:var(--dock-bg);
+.pill{position:relative;display:flex;height:var(--dh);padding:var(--pp);border-radius:calc(var(--dh)/2);background:var(--dock-bg);
   -webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);
   box-shadow:var(--dock-sh),inset 0 0 0 1px var(--line),inset 0 1px 0 var(--hl)}
-.ind{position:absolute;z-index:0;top:6px;bottom:6px;left:6px;border-radius:26px;pointer-events:none;
-  width:calc((100% - 12px)*var(--g)/(3 + var(--g)));transform:translateX(calc(var(--i)*100%/var(--g)));
+.ind{position:absolute;z-index:0;top:var(--pp);bottom:var(--pp);left:var(--pp);border-radius:calc(var(--dh)/2 - var(--pp));pointer-events:none;
+  width:calc((100% - 2*var(--pp))*var(--g)/(3 + var(--g)));transform:translateX(calc(var(--i)*100%/var(--g)));
   background:linear-gradient(180deg,color-mix(in srgb,var(--ink) 86%,#fff),var(--ink));
   box-shadow:0 8px 16px -6px color-mix(in srgb,var(--ink) 55%,transparent),inset 0 1px 0 rgba(255,255,255,.3);
   transition:transform .6s var(--spring),scale .32s var(--out);will-change:transform}
-.tab{position:relative;z-index:1;flex:1 1 0;min-width:0;height:52px;display:flex;align-items:center;justify-content:center;padding:0;
-  border:0;border-radius:26px;background:none;color:var(--mute);font:inherit;cursor:pointer;
+.tab{position:relative;z-index:1;flex:1 1 0;min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;padding:0;
+  border:0;border-radius:calc(var(--dh)/2 - var(--pp));background:none;color:var(--mute);font:inherit;cursor:pointer;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:flex-grow .6s var(--spring),color .3s}
 .tab.on{flex-grow:var(--g);color:var(--bg0)}
 .tab svg{flex:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:scale .25s var(--out)}
@@ -399,7 +401,7 @@ main,.view{scroll-padding-bottom:110px}
 .tab.on .lbw{grid-template-columns:1fr;margin-left:7px}
 .tab.on .lb{opacity:1;transform:none;transition:opacity .35s .1s,transform .55s var(--spring) .05s}
 .tab:focus-visible{outline:2px solid var(--cyan);outline-offset:-3px}
-.sbtn{flex:none;position:relative;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;padding:0;border:0;color:var(--ink);
+.sbtn{flex:none;position:relative;width:var(--dh);height:var(--dh);border-radius:50%;display:grid;place-items:center;padding:0;border:0;color:var(--ink);
   background:var(--dock-bg);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);
   box-shadow:var(--dock-sh),inset 0 0 0 1px var(--line),inset 0 1px 0 var(--hl);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
   transition:transform .45s var(--spring),background-color .3s,color .3s}
@@ -410,7 +412,7 @@ main,.view{scroll-padding-bottom:110px}
 @media (hover:hover){.tab:not(.on):hover{color:var(--ink)}.sbtn:hover svg{transform:rotate(-14deg) scale(1.08)}.sbtn.on:hover svg{transform:rotate(-90deg) scale(.9)}}
 @media (max-width:370px){.dock{--g:2.05}.sbtn{width:56px;height:56px}.tab .lb{font-size:12px}}
 /* ---- header v2: big date on the left, avatar with a goal ring on the right, a time-of-day sky behind ---- */
-header{position:relative;align-items:center;padding:14px 18px 8px}
+header{position:relative;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 8px}
 .greet{text-align:left;min-width:0;line-height:1.15;position:relative;z-index:1}
 .greet .hi{display:block;color:var(--mute);font-size:13px;font-weight:400;letter-spacing:.02em;max-width:62vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hdate{margin:2px 0 0;font-size:30px;font-weight:600;letter-spacing:-.025em;line-height:1.1}
@@ -426,7 +428,7 @@ header{position:relative;align-items:center;padding:14px 18px 8px}
 .avring.none .trk{stroke:transparent}
 .avwrap .avatar{position:absolute;inset:7px;width:auto;height:auto;padding:0;background:none;box-shadow:none}
 .avwrap .avatar span,.avwrap .avatar img{font-size:21px}
-.hsky{position:absolute;left:0;right:0;top:0;bottom:-34px;z-index:0;pointer-events:none;
+.hsky{position:fixed;left:0;right:0;top:0;height:calc(150px + env(safe-area-inset-top,0px));z-index:0;pointer-events:none;
   -webkit-mask-image:linear-gradient(to bottom,#000 45%,transparent);mask-image:linear-gradient(to bottom,#000 45%,transparent);transition:opacity .6s}
 .hsky::before,.hsky::after{content:"";position:absolute;inset:0;opacity:0}
 header[data-tod="night"] .hsky{background:linear-gradient(180deg,rgba(70,60,170,.4),rgba(70,60,170,.12) 60%,transparent)}
@@ -444,6 +446,22 @@ header[data-tod="dawn"] .hsky::after{background:radial-gradient(80px 80px at 22%
 header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80% 96%,rgba(255,120,60,.5),transparent 70%)}
 @keyframes twink{from{opacity:.35}to{opacity:1}}
 @media (max-width:370px){.hdate{font-size:26px}.avwrap{width:54px;height:54px}.avwrap .avatar{inset:6px}}
+/* ---- responsive: small phones, short screens (landscape), large screens ---- */
+.hc .per{margin-left:.3em}
+@media (max-width:380px){.hc .per{display:none}.hc{padding:0 9px}}
+@media (max-width:340px){.dock{--g:1.9;gap:8px}.sbtn{width:52px;height:52px}.hdate{font-size:24px}}
+@media (max-height:640px){.hdate{font-size:25px}.hmeta{margin-top:7px}header{padding-bottom:4px}}
+@media (max-height:480px){
+  header{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px}
+  .hmeta{display:none}
+  .greet .hi{font-size:12px}.hdate{font-size:22px;margin:0}
+  .avwrap{width:48px;height:48px}.avwrap .avatar{inset:5px}.avwrap .avatar span,.avwrap .avatar img{font-size:18px}
+  .hsky{height:calc(84px + env(safe-area-inset-top,0px))}
+  .dock{--dh:54px;--pp:5px;bottom:calc(8px + env(safe-area-inset-bottom,0px))}.sbtn{width:54px;height:54px}
+  .tab svg{width:20px;height:20px}.tab .lb{font-size:12px}
+  .view{padding-bottom:84px}.view>*:last-child{margin-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+}
+@media (min-width:700px){.dock{width:min(460px,calc(100% - 48px))}}
 </style>
 </head>
 <body>
@@ -572,8 +590,8 @@ header[data-tod="dusk"] .hsky::after{background:radial-gradient(90px 80px at 80%
     $('#avRing').classList.toggle('none',!(goal>0));
     var sk=streaks().cur,chips=[];
     chips.push(sk>0?'<span class="hc on">✦ '+sk+'-day streak</span>':'<span class="hc">Start a streak today</span>');
-    if(goal>0)chips.push('<span class="hc">'+dv(done).toFixed(1)+' / '+(+dv(goal).toFixed(1))+' '+uN()+' '+per+'</span>');
-    else if(wk>0)chips.push('<span class="hc">'+dv(wk).toFixed(1)+' '+uN()+' this week</span>');
+    if(goal>0)chips.push('<span class="hc">'+dv(done).toFixed(1)+' / '+(+dv(goal).toFixed(1))+' '+uN()+'<span class="per"> '+per+'</span></span>');
+    else if(wk>0)chips.push('<span class="hc">'+dv(wk).toFixed(1)+' '+uN()+'<span class="per"> this week</span></span>');
     $('#hMeta').innerHTML=chips.join('');
     $('#avatarBtn').setAttribute('aria-label','Open profile settings'+(goal>0?'. '+Math.round(p*100)+'% of your '+(wg>0?'weekly':'monthly')+' goal':''));
   }
